@@ -74,6 +74,11 @@
     <!-- NetBeans compile target (required for IDE integration) -->
     <target name="all" depends="build" description="Build all artifacts" />
 
+    <!-- NetBeans run target (required for IDE integration) -->
+    <target name="run" depends="build" description="Run application on GlassFish">
+        <echo message="Build complete. Deploy to GlassFish server to run." />
+    </target>
+
     <!-- Display help -->
     <target name="help" description="Display build help">
         <echo>
