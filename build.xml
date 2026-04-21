@@ -53,15 +53,12 @@
 
     <!-- Build WAR file for deployment -->
     <target name="build" depends="compile" description="Build WAR file">
-        <war destfile="${dist}/OnlineBanking.war" webxml="${webcontent}/WEB-INF/web.xml">
+        <war destfile="${dist}/OnlineBanking.war" webxml="${web}/WEB-INF/web.xml">
             <!-- Add compiled classes -->
             <classes dir="${build}" />
             
             <!-- Add JSP files -->
             <fileset dir="${web}" />
-            
-            <!-- Add WebContent (WEB-INF, etc.) -->
-            <webinf dir="${webcontent}/WEB-INF" />
             
             <!-- Add library files -->
             <lib dir="lib">
@@ -70,6 +67,12 @@
         </war>
         <echo message="WAR file built at ${dist}/OnlineBanking.war" />
     </target>
+
+    <!-- NetBeans dist target (required for IDE integration) -->
+    <target name="dist" depends="build" description="Build distribution package" />
+
+    <!-- NetBeans compile target (required for IDE integration) -->
+    <target name="all" depends="build" description="Build all artifacts" />
 
     <!-- Display help -->
     <target name="help" description="Display build help">
