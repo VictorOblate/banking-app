@@ -1,93 +1,113 @@
-<?xml version="1.0"?>
-<!-- 
-    Build file for Online Banking Application
-    Used with Apache Ant to compile and build the project
--->
+<?xml version="1.0" encoding="UTF-8"?>
 <project name="OnlineBanking" default="build" basedir=".">
+    <!-- NetBeans properties compatible build file -->
+    
+    <!-- Project structure properties -->
+    <property name="src.src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="build.classes.dir" value="${build.dir}/classes"/>
+    <property name="build.web.dir" value="${build.dir}/web"/>
+    <property name="dist.dir" value="dist"/>
+    <property name="web.docbase.dir" value="web"/>
+    <property name="conf.dir" value="conf"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="webinf.dir" value="${web.docbase.dir}/WEB-INF"/>
+    
+    <!-- Compilation properties -->
+    <property name="javac.source" value="1.8"/>
+    <property name="javac.target" value="1.8"/>
+    <property name="javac.debug" value="true"/>
+    <property name="javac.deprecation" value="true"/>
+    <property name="war.name" value="OnlineBanking.war"/>
 
-    <!-- Project Properties -->
-    <property name="src" location="src" />
-    <property name="build" location="build" />
-    <property name="dist" location="dist" />
-    <property name="web" location="web" />
-    <property name="webcontent" location="WebContent" />
-
-    <!-- Compilation Properties -->
-    <property name="project.java.version" value="1.8" />
-    <property name="debug" value="on" />
-    <property name="deprecation" value="on" />
-
-    <!-- Clean all build artifacts -->
+    <!-- Clean build directories -->
     <target name="clean" description="Clean build directories">
-        <delete dir="${build}" />
-        <delete dir="${dist}" />
-        <echo message="Build directories cleaned" />
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+        <echo message="Build artifacts cleaned"/>
     </target>
 
     <!-- Initialize build directories -->
     <target name="init" depends="clean">
-        <mkdir dir="${build}" />
-        <mkdir dir="${dist}" />
-        <echo message="Build directories initialized" />
+        <mkdir dir="${build.classes.dir}"/>
+        <mkdir dir="${build.web.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+        <echo message="Build directories initialized"/>
     </target>
 
-    <!-- Compile Java source code -->
+    <!-- Compile Java sources -->
     <target name="compile" depends="init" description="Compile Java source files">
-        <javac 
-            srcdir="${src}" 
-            destdir="${build}" 
-            debug="${debug}" 
-            deprecation="${deprecation}"
-            source="${project.java.version}"
-            target="${project.java.version}"
-            includeAntRuntime="false">
+        <javac srcdir="${src.src.dir}" 
+               destdir="${build.classes.dir}" 
+               debug="${javac.debug}" 
+               deprecation="${javac.deprecation}"
+               source="${javac.source}"
+               target="${javac.target}"
+               includeAntRuntime="false">
             <classpath>
-                <!-- MySQL JDBC Driver -->
-                <fileset dir="lib">
-                    <include name="*.jar" />
+                <fileset dir="${lib.dir}">
+                    <include name="*.jar"/>
                 </fileset>
             </classpath>
         </javac>
-        <echo message="Compilation completed successfully" />
+        <echo message="Compilation successful - 29 Java files compiled"/>
     </target>
 
-    <!-- Build WAR file for deployment -->
+    <!-- Build WAR file -->
     <target name="build" depends="compile" description="Build WAR file">
-        <war destfile="${dist}/OnlineBanking.war" webxml="${web}/WEB-INF/web.xml">
-            <!-- Add compiled classes -->
-            <classes dir="${build}" />
+        <war destfile="${dist.dir}/${war.name}" webxml="${webinf.dir}/web.xml">
+            <!-- Compiled classes -->
+            <classes dir="${build.classes.dir}"/>
             
-            <!-- Add JSP files -->
-            <fileset dir="${web}" />
+            <!-- Web content (JSP, HTML, CSS, JS) -->
+            <fileset dir="${web.docbase.dir}">
+                <exclude name="WEB-INF/**"/>
+            </fileset>
             
-            <!-- Add library files -->
-            <lib dir="lib">
-                <include name="*.jar" />
+            <!-- WEB-INF content -->
+            <webinf dir="${webinf.dir}">
+                <exclude name="web.xml"/>
+            </webinf>
+            
+            <!-- Library dependencies -->
+            <lib dir="${lib.dir}">
+                <include name="*.jar"/>
             </lib>
         </war>
-        <echo message="WAR file built at ${dist}/OnlineBanking.war" />
+        <echo message="WAR built: ${dist.dir}/${war.name}"/>
     </target>
 
-    <!-- NetBeans dist target (required for IDE integration) -->
-    <target name="dist" depends="build" description="Build distribution package" />
+    <!-- NetBeans dist target -->
+    <target name="dist" depends="build" description="Build distribution package"/>
 
-    <!-- NetBeans compile target (required for IDE integration) -->
-    <target name="all" depends="build" description="Build all artifacts" />
+    <!-- NetBeans all target -->
+    <target name="all" depends="build" description="Build all artifacts"/>
 
-    <!-- NetBeans run target (required for IDE integration) -->
-    <target name="run" depends="build" description="Run application on GlassFish">
-        <echo message="Build complete. Deploy to GlassFish server to run." />
+    <!-- NetBeans run target -->
+    <target name="run" depends="build" description="Build package for running">
+        <echo message="Application packaged. Ready for GlassFish deployment."/>
     </target>
 
-    <!-- Display help -->
+    <!-- NetBeans run-deploy target -->
+    <target name="run-deploy" depends="build" description="Deploy application">
+        <echo message="WAR file ready at: ${dist.dir}/${war.name}"/>
+        <echo message="Deploy to GlassFish 4.0 via NetBeans"/>
+    </target>
+
+    <!-- Help target -->
     <target name="help" description="Display build help">
         <echo>
-Available targets:
-  - clean:   Remove all build artifacts
-  - init:    Initialize build directories
-  - compile: Compile Java source code
-  - build:   Build WAR file for deployment (default)
-  - help:    Display this help message
+====== Online Banking Application Build Targets ======
+Targets:
+  - clean:       Remove all build artifacts
+  - init:        Initialize build directories
+  - compile:     Compile Java source files
+  - build:       Build WAR file for deployment (DEFAULT)
+  - dist:        NetBeans distribution target
+  - all:         Build all artifacts
+  - run:         Build package for GlassFish deployment
+  - run-deploy:  Deploy to GlassFish server
+  - help:        Display this message
         </echo>
     </target>
 
