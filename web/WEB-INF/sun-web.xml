@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sun-web-app xmlns="http://www.sun.com/xml/ns/appserver/sun-web-app_2_5-0.dtd"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.sun.com/xml/ns/appserver/sun-web-app_2_5-0.dtd http://www.sun.com/xml/ns/appserver/sun-web-app_2_5-0.xsd"
+             version="2.5">
+    <context-root>/banking-app</context-root>
+    
+    <!-- GlassFish specific configurations -->
+    <class-loader delegate="true"/>
+    <jsp-config>
+        <property name="keepgenerated" value="true"/>
+    </jsp-config>
+    
+    <!-- Session configuration -->
+    <session-manager persistence-type="file"/>
+    
+</sun-web-app>
