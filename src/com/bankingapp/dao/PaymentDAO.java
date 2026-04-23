@@ -338,14 +338,13 @@ public class PaymentDAO {
     /**
      * Update an existing payment
      * 
-     * @param payment The Payment object with updated data
+     * @param payment The Payment object with updated information
      * @return true if payment was updated successfully, false otherwise
      */
     public boolean updatePayment(Payment payment) {
         String sql = "UPDATE payments SET employee_id = ?, customer_id = ?, payment_type = ?, " +
-                     "payment_description = ?, amount = ?, payment_method = ?, payment_date = ?, " +
-                     "payment_status = ?, reference_number = ?, remarks = ?, processed_date = ? " +
-                     "WHERE payment_id = ?";
+                     "payment_description = ?, amount = ?, payment_method = ?, payment_status = ?, " +
+                     "reference_number = ?, remarks = ? WHERE payment_id = ?";
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -354,23 +353,29 @@ public class PaymentDAO {
             connection = DBConnection.getConnection();
             preparedStatement = connection.prepareStatement(sql);
             
-            preparedStatement.setInt(1, payment.getEmployeeId());
-            preparedStatement.setInt(2, payment.getCustomerId());
+            if (payment.getEmployeeId() > 0) {
+                preparedStatement.setInt(1, payment.getEmployeeId());
+            } else {
+                preparedStatement.setNull(1, java.sql.Types.INTEGER);
+            }
+            
+            if (payment.getCustomerId() > 0) {
+                preparedStatement.setInt(2, payment.getCustomerId());
+            } else {
+                preparedStatement.setNull(2, java.sql.Types.INTEGER);
+            }
+            
             preparedStatement.setString(3, payment.getPaymentType());
             preparedStatement.setString(4, payment.getPaymentDescription());
             preparedStatement.setDouble(5, payment.getAmount());
             preparedStatement.setString(6, payment.getPaymentMethod());
-            preparedStatement.setDate(7, payment.getPaymentDate() != null ? 
-                new java.sql.Date(payment.getPaymentDate().getTime()) : null);
-            preparedStatement.setString(8, payment.getStatus());
-            preparedStatement.setString(9, payment.getReferenceNumber());
-            preparedStatement.setString(10, payment.getRemarks());
-            preparedStatement.setTimestamp(11, payment.getProcessedDate() != null ? 
-                new java.sql.Timestamp(payment.getProcessedDate().getTime()) : null);
-            preparedStatement.setInt(12, payment.getPaymentId());
+            preparedStatement.setString(7, payment.getPaymentStatus());
+            preparedStatement.setString(8, payment.getReferenceNumber());
+            preparedStatement.setString(9, payment.getRemarks());
+            preparedStatement.setInt(10, payment.getPaymentId());
             
             int rowsAffected = preparedStatement.executeUpdate();
-            System.out.println("Payment updated successfully: " + payment.getPaymentId());
+            System.out.println("Payment updated: " + payment.getPaymentId());
             return rowsAffected > 0;
             
         } catch (SQLException | ClassNotFoundException e) {
@@ -404,7 +409,7 @@ public class PaymentDAO {
             preparedStatement.setInt(1, paymentId);
             
             int rowsAffected = preparedStatement.executeUpdate();
-            System.out.println("Payment deleted successfully: " + paymentId);
+            System.out.println("Payment deleted: " + paymentId);
             return rowsAffected > 0;
             
         } catch (SQLException | ClassNotFoundException e) {
@@ -418,5 +423,40 @@ public class PaymentDAO {
                 System.err.println("Error closing resources: " + e.getMessage());
             }
         }
+    }
+    
+    /**
+     * Get total count of payments
+     * 
+     * @return Total number of payments in the database
+     */
+    public int getPaymentCount() {
+        String sql = "SELECT COUNT(*) as count FROM payments";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("count");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error getting payment count: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+        
+        return 0;
     }
 }

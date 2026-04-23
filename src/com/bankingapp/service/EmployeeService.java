@@ -181,16 +181,14 @@ public class EmployeeService {
     }
     
     /**
-     * Generate a unique employee code
+     * Generate a unique employee code for new employees
      * 
-     * Format: EMP + 3 digit random number
-     * Example: EMP001, EMP999
-     * 
-     * @return Generated employee code
+     * @return A unique employee code string
      */
     private String generateEmployeeCode() {
-        Random random = new Random();
-        int empNum = 100 + random.nextInt(900);
-        return "EMP" + empNum;
+        // Generate employee code in format: EMP + timestamp + random digits
+        long timestamp = System.currentTimeMillis();
+        int random = (int) (Math.random() * 100);
+        return "EMP" + timestamp + String.format("%02d", random);
     }
 }

@@ -10,25 +10,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.bankingapp.model.Admin;
-import com.bankingapp.model.Payment;
+import com.bankingapp.model.Transaction;
 import com.bankingapp.service.TransactionPaymentService;
 import com.bankingapp.util.Constants;
 
-/**
- * Payment Servlet
- * Payment management operations.
- *
- * @author Banking App Development Team
- * @version 1.0
- */
-public class PaymentServlet extends HttpServlet {
+public class TransactionServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private TransactionPaymentService paymentService;
+    private TransactionPaymentService transactionService;
 
     @Override
     public void init() throws ServletException {
         super.init();
-        this.paymentService = new TransactionPaymentService();
+        this.transactionService = new TransactionPaymentService();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -48,7 +41,7 @@ public class PaymentServlet extends HttpServlet {
 
             switch (action) {
                 case Constants.ACTION_LIST:
-                    listPayments(request, response);
+                    listTransactions(request, response);
                     break;
                 case Constants.ACTION_ADD:
                     showAddForm(request, response);
@@ -60,11 +53,11 @@ public class PaymentServlet extends HttpServlet {
                     showViewForm(request, response);
                     break;
                 default:
-                    listPayments(request, response);
+                    listTransactions(request, response);
             }
 
         } catch (Exception e) {
-            System.err.println("Error in PaymentServlet: " + e.getMessage());
+            System.err.println("Error in TransactionServlet: " + e.getMessage());
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
@@ -82,47 +75,47 @@ public class PaymentServlet extends HttpServlet {
             String action = request.getParameter(Constants.ACTION);
 
             if (Constants.ACTION_SAVE.equals(action)) {
-                savePayment(request, response);
+                saveTransaction(request, response);
             } else if (Constants.ACTION_DELETE.equals(action)) {
-                deletePayment(request, response);
+                deleteTransaction(request, response);
             } else {
-                listPayments(request, response);
+                listTransactions(request, response);
             }
 
         } catch (Exception e) {
-            System.err.println("Error in PaymentServlet: " + e.getMessage());
+            System.err.println("Error in TransactionServlet: " + e.getMessage());
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
-    private void listPayments(HttpServletRequest request, HttpServletResponse response)
+    private void listTransactions(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, java.io.IOException {
 
         try {
-            // Get all payments
-            List<Payment> payments = paymentService.getAllPayments();
-            request.setAttribute("payments", payments);
+            // Get all transactions
+            List<Transaction> transactions = transactionService.getAllTransactions();
+            request.setAttribute("transactions", transactions);
 
             // Get statistics
-            int totalPayments = paymentService.getPaymentCount();
-            int todayPayments = 0; // TODO: Implement today count
+            int totalTransactions = transactionService.getTransactionCount();
+            int todayTransactions = 0; // TODO: Implement today count
             double totalAmount = 0.0; // TODO: Implement total amount
             double todayAmount = 0.0; // TODO: Implement today amount
 
-            request.setAttribute("totalPayments", totalPayments);
-            request.setAttribute("todayPayments", todayPayments);
+            request.setAttribute("totalTransactions", totalTransactions);
+            request.setAttribute("todayTransactions", todayTransactions);
             request.setAttribute("totalAmount", totalAmount);
             request.setAttribute("todayAmount", todayAmount);
 
-            // Forward to payment list page
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/list.jsp");
+            // Forward to transaction list page
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/transaction/list.jsp");
             dispatcher.forward(request, response);
 
         } catch (Exception e) {
-            System.err.println("Error listing payments: " + e.getMessage());
+            System.err.println("Error listing transactions: " + e.getMessage());
             request.setAttribute("error", Constants.ERROR_DATABASE);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/list.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/transaction/list.jsp");
             dispatcher.forward(request, response);
         }
     }
@@ -131,8 +124,8 @@ public class PaymentServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
-            // Forward to payment form page
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/form.jsp");
+            // Forward to transaction form page
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/transaction/form.jsp");
             dispatcher.forward(request, response);
 
         } catch (Exception e) {
@@ -145,21 +138,21 @@ public class PaymentServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
-            int paymentId = Integer.parseInt(request.getParameter("id"));
+            int transactionId = Integer.parseInt(request.getParameter("id"));
 
-            // Get payment by ID
-            Payment payment = paymentService.getPaymentById(paymentId);
-            if (payment == null) {
-                request.setAttribute("error", "Payment not found");
-                listPayments(request, response);
+            // Get transaction by ID
+            Transaction transaction = transactionService.getTransactionById(transactionId);
+            if (transaction == null) {
+                request.setAttribute("error", "Transaction not found");
+                listTransactions(request, response);
                 return;
             }
 
-            request.setAttribute("payment", payment);
+            request.setAttribute("transaction", transaction);
             request.setAttribute("isEdit", true);
 
-            // Forward to payment form page
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/form.jsp");
+            // Forward to transaction form page
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/transaction/form.jsp");
             dispatcher.forward(request, response);
 
         } catch (Exception e) {
@@ -172,21 +165,21 @@ public class PaymentServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
-            int paymentId = Integer.parseInt(request.getParameter("id"));
+            int transactionId = Integer.parseInt(request.getParameter("id"));
 
-            // Get payment by ID
-            Payment payment = paymentService.getPaymentById(paymentId);
-            if (payment == null) {
-                request.setAttribute("error", "Payment not found");
-                listPayments(request, response);
+            // Get transaction by ID
+            Transaction transaction = transactionService.getTransactionById(transactionId);
+            if (transaction == null) {
+                request.setAttribute("error", "Transaction not found");
+                listTransactions(request, response);
                 return;
             }
 
-            request.setAttribute("payment", payment);
+            request.setAttribute("transaction", transaction);
             request.setAttribute("isView", true);
 
-            // Forward to payment form page
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/form.jsp");
+            // Forward to transaction form page
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/transaction/form.jsp");
             dispatcher.forward(request, response);
 
         } catch (Exception e) {
@@ -195,44 +188,44 @@ public class PaymentServlet extends HttpServlet {
         }
     }
 
-    private void savePayment(HttpServletRequest request, HttpServletResponse response)
+    private void saveTransaction(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, java.io.IOException {
 
         try {
-            // Get payment data from request
-            String paymentIdStr = request.getParameter("paymentId");
+            // Get transaction data from request
+            String transactionIdStr = request.getParameter("transactionId");
             String customerIdStr = request.getParameter("customerId");
-            String paymentType = request.getParameter("paymentType");
+            String transactionType = request.getParameter("transactionType");
             String description = request.getParameter("description");
             String amountStr = request.getParameter("amount");
             String status = request.getParameter("status");
             String notes = request.getParameter("notes");
 
-            // Create payment object
-            Payment payment = new Payment();
-            payment.setPaymentType(paymentType);
-            payment.setPaymentDescription(description);
-            payment.setAmount(Double.parseDouble(amountStr));
-            payment.setPaymentStatus(status != null ? status : "PENDING");
-            payment.setRemarks(notes);
+            // Create transaction object
+            Transaction transaction = new Transaction();
+            transaction.setTransactionType(transactionType);
+            transaction.setDescription(description);
+            transaction.setAmount(Double.parseDouble(amountStr));
+            transaction.setStatus(status != null ? status : "PENDING");
+            transaction.setNotes(notes);
 
             if (customerIdStr != null && !customerIdStr.isEmpty()) {
-                payment.setCustomerId(Integer.parseInt(customerIdStr));
+                transaction.setCustomerId(Integer.parseInt(customerIdStr));
             }
 
             boolean success = false;
             String message = "";
 
             // Check if create or update
-            if (paymentIdStr == null || paymentIdStr.isEmpty()) {
-                // Create new payment
-                success = paymentService.processPayment(payment);
-                message = success ? "Payment processed successfully" : "Failed to process payment";
+            if (transactionIdStr == null || transactionIdStr.isEmpty()) {
+                // Create new transaction
+                success = transactionService.recordTransaction(transaction);
+                message = success ? "Transaction recorded successfully" : "Failed to record transaction";
             } else {
-                // Update existing payment
-                payment.setPaymentId(Integer.parseInt(paymentIdStr));
-                success = paymentService.updatePayment(payment);
-                message = success ? "Payment updated successfully" : "Failed to update payment";
+                // Update existing transaction
+                transaction.setTransactionId(Integer.parseInt(transactionIdStr));
+                success = transactionService.updateTransaction(transaction);
+                message = success ? "Transaction updated successfully" : "Failed to update transaction";
             }
 
             if (success) {
@@ -241,36 +234,36 @@ public class PaymentServlet extends HttpServlet {
                 request.setAttribute("error", message);
             }
 
-            // Redirect to payment list
-            response.sendRedirect(request.getContextPath() + "/payment?action=list");
+            // Redirect to transaction list
+            response.sendRedirect(request.getContextPath() + "/transaction?action=list");
 
         } catch (Exception e) {
-            System.err.println("Error saving payment: " + e.getMessage());
+            System.err.println("Error saving transaction: " + e.getMessage());
             e.printStackTrace();
-            request.setAttribute("error", "Error saving payment");
-            listPayments(request, response);
+            request.setAttribute("error", "Error saving transaction");
+            listTransactions(request, response);
         }
     }
 
-    private void deletePayment(HttpServletRequest request, HttpServletResponse response)
+    private void deleteTransaction(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, java.io.IOException {
 
         try {
-            int paymentId = Integer.parseInt(request.getParameter("id"));
+            int transactionId = Integer.parseInt(request.getParameter("id"));
 
-            boolean success = paymentService.deletePayment(paymentId);
+            boolean success = transactionService.deleteTransaction(transactionId);
 
             if (success) {
-                request.setAttribute("success", "Payment deleted successfully");
+                request.setAttribute("success", "Transaction deleted successfully");
             } else {
-                request.setAttribute("error", "Failed to delete payment");
+                request.setAttribute("error", "Failed to delete transaction");
             }
 
-            // Redirect to payment list
-            response.sendRedirect(request.getContextPath() + "/payment?action=list");
+            // Redirect to transaction list
+            response.sendRedirect(request.getContextPath() + "/transaction?action=list");
 
         } catch (Exception e) {
-            System.err.println("Error deleting payment: " + e.getMessage());
+            System.err.println("Error deleting transaction: " + e.getMessage());
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }

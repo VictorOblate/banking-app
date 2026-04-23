@@ -10,25 +10,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.bankingapp.model.Admin;
-import com.bankingapp.model.Package;
+import com.bankingapp.model.Shift;
 import com.bankingapp.service.PackageShiftService;
 import com.bankingapp.util.Constants;
 
-/**
- * Package Servlet
- * Package management operations.
- *
- * @author Banking App Development Team
- * @version 1.0
- */
-public class PackageServlet extends HttpServlet {
+public class ShiftServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private PackageShiftService packageService;
+    private PackageShiftService shiftService;
 
     @Override
     public void init() throws ServletException {
         super.init();
-        this.packageService = new PackageShiftService();
+        this.shiftService = new PackageShiftService();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -48,7 +41,7 @@ public class PackageServlet extends HttpServlet {
 
             switch (action) {
                 case Constants.ACTION_LIST:
-                    listPackages(request, response);
+                    listShifts(request, response);
                     break;
                 case Constants.ACTION_ADD:
                     showAddForm(request, response);
@@ -60,11 +53,11 @@ public class PackageServlet extends HttpServlet {
                     showViewForm(request, response);
                     break;
                 default:
-                    listPackages(request, response);
+                    listShifts(request, response);
             }
 
         } catch (Exception e) {
-            System.err.println("Error in PackageServlet: " + e.getMessage());
+            System.err.println("Error in ShiftServlet: " + e.getMessage());
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
@@ -82,45 +75,45 @@ public class PackageServlet extends HttpServlet {
             String action = request.getParameter(Constants.ACTION);
 
             if (Constants.ACTION_SAVE.equals(action)) {
-                savePackage(request, response);
+                saveShift(request, response);
             } else if (Constants.ACTION_DELETE.equals(action)) {
-                deletePackage(request, response);
+                deleteShift(request, response);
             } else {
-                listPackages(request, response);
+                listShifts(request, response);
             }
 
         } catch (Exception e) {
-            System.err.println("Error in PackageServlet: " + e.getMessage());
+            System.err.println("Error in ShiftServlet: " + e.getMessage());
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
-    private void listPackages(HttpServletRequest request, HttpServletResponse response)
+    private void listShifts(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, java.io.IOException {
 
         try {
-            // Get all packages
-            List<Package> packages = packageService.getAllPackages();
-            request.setAttribute("packages", packages);
+            // Get all shifts
+            List<Shift> shifts = shiftService.getAllShifts();
+            request.setAttribute("shifts", shifts);
 
             // Get statistics
-            int totalPackages = packageService.getPackageCount();
-            int activePackages = 0; // TODO: Implement active count
-            double totalValue = 0.0; // TODO: Implement total value
+            int totalShifts = shiftService.getShiftCount();
+            int activeShifts = 0; // TODO: Implement active count
+            int todayShifts = 0; // TODO: Implement today count
 
-            request.setAttribute("totalPackages", totalPackages);
-            request.setAttribute("activePackages", activePackages);
-            request.setAttribute("totalValue", totalValue);
+            request.setAttribute("totalShifts", totalShifts);
+            request.setAttribute("activeShifts", activeShifts);
+            request.setAttribute("todayShifts", todayShifts);
 
-            // Forward to package list page
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/package/list.jsp");
+            // Forward to shift list page
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/shift/list.jsp");
             dispatcher.forward(request, response);
 
         } catch (Exception e) {
-            System.err.println("Error listing packages: " + e.getMessage());
+            System.err.println("Error listing shifts: " + e.getMessage());
             request.setAttribute("error", Constants.ERROR_DATABASE);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/package/list.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/shift/list.jsp");
             dispatcher.forward(request, response);
         }
     }
@@ -129,8 +122,8 @@ public class PackageServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
-            // Forward to package form page
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/package/form.jsp");
+            // Forward to shift form page
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/shift/form.jsp");
             dispatcher.forward(request, response);
 
         } catch (Exception e) {
@@ -143,21 +136,21 @@ public class PackageServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
-            int packageId = Integer.parseInt(request.getParameter("id"));
+            int shiftId = Integer.parseInt(request.getParameter("id"));
 
-            // Get package by ID
-            Package pkg = packageService.getPackageById(packageId);
-            if (pkg == null) {
-                request.setAttribute("error", "Package not found");
-                listPackages(request, response);
+            // Get shift by ID
+            Shift shift = shiftService.getShiftById(shiftId);
+            if (shift == null) {
+                request.setAttribute("error", "Shift not found");
+                listShifts(request, response);
                 return;
             }
 
-            request.setAttribute("package", pkg);
+            request.setAttribute("shift", shift);
             request.setAttribute("isEdit", true);
 
-            // Forward to package form page
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/package/form.jsp");
+            // Forward to shift form page
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/shift/form.jsp");
             dispatcher.forward(request, response);
 
         } catch (Exception e) {
@@ -170,21 +163,21 @@ public class PackageServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
-            int packageId = Integer.parseInt(request.getParameter("id"));
+            int shiftId = Integer.parseInt(request.getParameter("id"));
 
-            // Get package by ID
-            Package pkg = packageService.getPackageById(packageId);
-            if (pkg == null) {
-                request.setAttribute("error", "Package not found");
-                listPackages(request, response);
+            // Get shift by ID
+            Shift shift = shiftService.getShiftById(shiftId);
+            if (shift == null) {
+                request.setAttribute("error", "Shift not found");
+                listShifts(request, response);
                 return;
             }
 
-            request.setAttribute("package", pkg);
+            request.setAttribute("shift", shift);
             request.setAttribute("isView", true);
 
-            // Forward to package form page
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/package/form.jsp");
+            // Forward to shift form page
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/shift/form.jsp");
             dispatcher.forward(request, response);
 
         } catch (Exception e) {
@@ -193,43 +186,40 @@ public class PackageServlet extends HttpServlet {
         }
     }
 
-    private void savePackage(HttpServletRequest request, HttpServletResponse response)
+    private void saveShift(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, java.io.IOException {
 
         try {
-            // Get package data from request
-            String packageIdStr = request.getParameter("packageId");
-            String packageName = request.getParameter("packageName");
-            String packageType = request.getParameter("packageType");
-            String description = request.getParameter("description");
-            String benefits = request.getParameter("benefits");
-            String monthlyFeeStr = request.getParameter("monthlyFee");
-            String annualFeeStr = request.getParameter("annualFee");
+            // Get shift data from request
+            String shiftIdStr = request.getParameter("shiftId");
+            String employeeIdStr = request.getParameter("employeeId");
+            String shiftName = request.getParameter("shiftName");
+            String startTime = request.getParameter("startTime");
+            String endTime = request.getParameter("endTime");
             String status = request.getParameter("status");
+            String notes = request.getParameter("notes");
 
-            // Create package object
-            Package pkg = new Package();
-            pkg.setPackageName(packageName);
-            pkg.setPackageType(packageType);
-            pkg.setDescription(description);
-            pkg.setBenefits(benefits);
-            pkg.setMonthlyFee(Double.parseDouble(monthlyFeeStr));
-            pkg.setAnnualFee(Double.parseDouble(annualFeeStr));
-            pkg.setActive("ACTIVE".equals(status));
+            // Create shift object
+            Shift shift = new Shift();
+            shift.setShiftName(shiftName);
+            shift.setStartTime(startTime);
+            shift.setEndTime(endTime);
+            shift.setDescription(notes);
+            shift.setActive("ACTIVE".equals(status));
 
             boolean success = false;
             String message = "";
 
             // Check if create or update
-            if (packageIdStr == null || packageIdStr.isEmpty()) {
-                // Create new package
-                success = packageService.createPackage(pkg);
-                message = success ? "Package created successfully" : "Failed to create package";
+            if (shiftIdStr == null || shiftIdStr.isEmpty()) {
+                // Create new shift
+                success = shiftService.createShift(shift);
+                message = success ? "Shift created successfully" : "Failed to create shift";
             } else {
-                // Update existing package
-                pkg.setPackageId(Integer.parseInt(packageIdStr));
-                success = packageService.updatePackage(pkg);
-                message = success ? "Package updated successfully" : "Failed to update package";
+                // Update existing shift
+                shift.setShiftId(Integer.parseInt(shiftIdStr));
+                success = shiftService.updateShift(shift);
+                message = success ? "Shift updated successfully" : "Failed to update shift";
             }
 
             if (success) {
@@ -238,36 +228,36 @@ public class PackageServlet extends HttpServlet {
                 request.setAttribute("error", message);
             }
 
-            // Redirect to package list
-            response.sendRedirect(request.getContextPath() + "/package?action=list");
+            // Redirect to shift list
+            response.sendRedirect(request.getContextPath() + "/shift?action=list");
 
         } catch (Exception e) {
-            System.err.println("Error saving package: " + e.getMessage());
+            System.err.println("Error saving shift: " + e.getMessage());
             e.printStackTrace();
-            request.setAttribute("error", "Error saving package");
-            listPackages(request, response);
+            request.setAttribute("error", "Error saving shift");
+            listShifts(request, response);
         }
     }
 
-    private void deletePackage(HttpServletRequest request, HttpServletResponse response)
+    private void deleteShift(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, java.io.IOException {
 
         try {
-            int packageId = Integer.parseInt(request.getParameter("id"));
+            int shiftId = Integer.parseInt(request.getParameter("id"));
 
-            boolean success = packageService.deletePackage(packageId);
+            boolean success = shiftService.deleteShift(shiftId);
 
             if (success) {
-                request.setAttribute("success", "Package deleted successfully");
+                request.setAttribute("success", "Shift deleted successfully");
             } else {
-                request.setAttribute("error", "Failed to delete package");
+                request.setAttribute("error", "Failed to delete shift");
             }
 
-            // Redirect to package list
-            response.sendRedirect(request.getContextPath() + "/package?action=list");
+            // Redirect to shift list
+            response.sendRedirect(request.getContextPath() + "/shift?action=list");
 
         } catch (Exception e) {
-            System.err.println("Error deleting package: " + e.getMessage());
+            System.err.println("Error deleting shift: " + e.getMessage());
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }

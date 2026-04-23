@@ -88,9 +88,31 @@ header {
     color: var(--primary-green);
 }
 
-.logo svg {
+.logo svg,
+.logo img {
     width: 40px;
     height: 40px;
+    object-fit: contain;
+}
+
+.feature-icon svg {
+    width: 32px;
+    height: 32px;
+}
+
+.benefit-list li,
+.contact-list li {
+    position: relative;
+    margin-bottom: 1rem;
+    padding-left: 1.8rem;
+    line-height: 1.6;
+}
+
+.benefit-list li svg,
+.contact-list li svg {
+    position: absolute;
+    left: 0;
+    top: 0.2rem;
 }
 
 nav {

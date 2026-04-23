@@ -238,4 +238,39 @@ public class ShiftDAO {
         shift.setActive(resultSet.getBoolean("is_active"));
         return shift;
     }
+    
+    /**
+     * Get total count of shifts
+     * 
+     * @return Total number of shifts in the database
+     */
+    public int getShiftCount() {
+        String sql = "SELECT COUNT(*) as count FROM shifts";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("count");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error getting shift count: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+        
+        return 0;
+    }
 }

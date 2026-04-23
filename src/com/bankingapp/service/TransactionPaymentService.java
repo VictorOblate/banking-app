@@ -88,6 +88,43 @@ public class TransactionPaymentService {
         return transactionDAO.updateTransactionStatus(transactionId, newStatus);
     }
     
+    /**
+     * Update an existing transaction
+     * 
+     * @param transaction The Transaction object with updated data
+     * @return true if transaction was updated successfully, false otherwise
+     */
+    public boolean updateTransaction(Transaction transaction) {
+        if (transaction == null || transaction.getTransactionId() <= 0) {
+            System.out.println("Invalid transaction data for update");
+            return false;
+        }
+        return transactionDAO.updateTransaction(transaction);
+    }
+    
+    /**
+     * Delete a transaction by ID
+     * 
+     * @param transactionId The ID of the transaction to delete
+     * @return true if transaction was deleted successfully, false otherwise
+     */
+    public boolean deleteTransaction(int transactionId) {
+        if (transactionId <= 0) {
+            System.out.println("Invalid transaction ID for deletion");
+            return false;
+        }
+        return transactionDAO.deleteTransaction(transactionId);
+    }
+    
+    /**
+     * Get total count of transactions
+     * 
+     * @return Total number of transactions
+     */
+    public int getTransactionCount() {
+        return transactionDAO.getTransactionCount();
+    }
+    
     private String generateTransactionReference() {
         long timestamp = System.currentTimeMillis();
         String uuid = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
@@ -140,48 +177,57 @@ public class TransactionPaymentService {
     }
     
     /**
-     * Get total count of transactions
-     * 
-     * @return Total number of transactions in the system
-     */
-    public int getTransactionCount() {
-        return transactionDAO.getTransactionCount();
-    }
-    
-    /**
-     * Update an existing transaction
-     * 
-     * @param transaction The Transaction object with updated data
-     * @return true if transaction was updated successfully, false otherwise
-     */
-    public boolean updateTransaction(Transaction transaction) {
-        if (transaction == null || transaction.getTransactionId() <= 0) {
-            System.out.println("Invalid transaction data for update");
-            return false;
-        }
-        return transactionDAO.updateTransaction(transaction);
-    }
-    
-    /**
-     * Delete a transaction by ID
-     * 
-     * @param transactionId The ID of the transaction to delete
-     * @return true if transaction was deleted successfully, false otherwise
-     */
-    public boolean deleteTransaction(int transactionId) {
-        if (transactionId <= 0) {
-            System.out.println("Invalid transaction ID for deletion");
-            return false;
-        }
-        return transactionDAO.deleteTransaction(transactionId);
-    }
-    
-    /**
      * Get total payments amount for current month
      * 
      * @return Total payment amount for the current month
      */
     public double getTotalPaymentsThisMonth() {
         return paymentDAO.getTotalPaymentsThisMonth();
+    }
+    
+    /**
+     * Update an existing payment
+     * 
+     * @param payment The Payment object with updated data
+     * @return true if payment was updated successfully, false otherwise
+     */
+    public boolean updatePayment(Payment payment) {
+        if (payment == null || payment.getPaymentId() <= 0) {
+            System.out.println("Invalid payment data for update");
+            return false;
+        }
+        return paymentDAO.updatePayment(payment);
+    }
+    
+    /**
+     * Delete a payment by ID
+     * 
+     * @param paymentId The ID of the payment to delete
+     * @return true if payment was deleted successfully, false otherwise
+     */
+    public boolean deletePayment(int paymentId) {
+        if (paymentId <= 0) {
+            System.out.println("Invalid payment ID for deletion");
+            return false;
+        }
+        return paymentDAO.deletePayment(paymentId);
+    }
+    
+    /**
+     * Get all payments
+     * 
+     * @return List of all payments
+     */
+    public List<Payment> getAllPayments() {
+        return paymentDAO.getAllPayments();
+    }
+    
+    /**
+     * Get total count of payments
+     * 
+     * @return Total number of payments
+     */
+    public int getPaymentCount() {
+        return paymentDAO.getPaymentCount();
     }
 }

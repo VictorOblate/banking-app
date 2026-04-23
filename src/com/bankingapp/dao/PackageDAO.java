@@ -242,4 +242,39 @@ public class PackageDAO {
         pkg.setActive(resultSet.getBoolean("is_active"));
         return pkg;
     }
+    
+    /**
+     * Get total count of packages
+     * 
+     * @return Total number of packages in the database
+     */
+    public int getPackageCount() {
+        String sql = "SELECT COUNT(*) as count FROM packages";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("count");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error getting package count: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+        
+        return 0;
+    }
 }

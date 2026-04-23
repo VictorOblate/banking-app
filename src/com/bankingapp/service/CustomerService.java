@@ -166,16 +166,14 @@ public class CustomerService {
     }
     
     /**
-     * Generate a unique account number
+     * Generate a unique account number for new customers
      * 
-     * Format: ACC + 6 random digits
-     * Example: ACC123456
-     * 
-     * @return Generated account number
+     * @return A unique account number string
      */
     private String generateAccountNumber() {
-        Random random = new Random();
-        long accountNum = 100000 + random.nextLong() % 900000;
-        return "ACC" + accountNum;
+        // Generate account number in format: BASO + timestamp + random digits
+        long timestamp = System.currentTimeMillis();
+        int random = (int) (Math.random() * 1000);
+        return "BASO" + timestamp + String.format("%03d", random);
     }
 }

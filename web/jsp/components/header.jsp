@@ -14,13 +14,7 @@
 <header>
     <div class="header-container">
         <div class="logo">
-            <svg width="40" height="40" viewBox="0 0 200 200">
-                <circle cx="100" cy="100" r="95" fill="#f5f5f5" stroke="#2d7a4f" stroke-width="2"/>
-                <circle cx="100" cy="100" r="88" fill="none" stroke="#4caf50" stroke-width="1.5" opacity="0.3"/>
-                <path d="M 100 40 L 140 60 L 140 90 Q 100 130 100 130 Q 100 130 60 90 L 60 60 Z" fill="none" stroke="#2d7a4f" stroke-width="2.5"/>
-                <circle cx="100" cy="85" r="12" fill="#4caf50"/>
-                <rect x="93" y="95" width="14" height="20" fill="none" stroke="#2d7a4f" stroke-width="1.5" rx="2"/>
-            </svg>
+            <img src="${pageContext.request.contextPath}/images/logo.svg" alt="Basotho Ownership Bank logo">
             <span>Basotho Ownership Bank</span>
         </div>
         

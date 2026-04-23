@@ -301,15 +301,39 @@ public class TransactionDAO {
     }
     
     /**
+     * Helper method to map ResultSet to Transaction object
+     * 
+     * @param resultSet The ResultSet to map
+     * @return Transaction object populated from ResultSet
+     * @throws SQLException if ResultSet access fails
+     */
+    private Transaction mapResultSetToTransaction(ResultSet resultSet) throws SQLException {
+        Transaction transaction = new Transaction();
+        transaction.setTransactionId(resultSet.getInt("transaction_id"));
+        transaction.setCustomerId(resultSet.getInt("customer_id"));
+        transaction.setTransactionType(resultSet.getString("transaction_type"));
+        transaction.setDescription(resultSet.getString("description"));
+        transaction.setAmount(resultSet.getDouble("amount"));
+        transaction.setBalanceBefore(resultSet.getDouble("balance_before"));
+        transaction.setBalanceAfter(resultSet.getDouble("balance_after"));
+        transaction.setReferenceNumber(resultSet.getString("reference_number"));
+        transaction.setStatus(resultSet.getString("status"));
+        transaction.setTransactionDate(resultSet.getTimestamp("transaction_date"));
+        transaction.setProcessedDate(resultSet.getTimestamp("processed_date"));
+        transaction.setNotes(resultSet.getString("notes"));
+        return transaction;
+    }
+    
+    /**
      * Update an existing transaction
      * 
-     * @param transaction The Transaction object with updated data
+     * @param transaction The Transaction object with updated information
      * @return true if transaction was updated successfully, false otherwise
      */
     public boolean updateTransaction(Transaction transaction) {
         String sql = "UPDATE transactions SET customer_id = ?, transaction_type = ?, description = ?, " +
                      "amount = ?, balance_before = ?, balance_after = ?, reference_number = ?, " +
-                     "status = ?, processed_date = ?, notes = ? WHERE transaction_id = ?";
+                     "status = ?, notes = ? WHERE transaction_id = ?";
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -318,7 +342,12 @@ public class TransactionDAO {
             connection = DBConnection.getConnection();
             preparedStatement = connection.prepareStatement(sql);
             
-            preparedStatement.setInt(1, transaction.getCustomerId());
+            if (transaction.getCustomerId() > 0) {
+                preparedStatement.setInt(1, transaction.getCustomerId());
+            } else {
+                preparedStatement.setNull(1, java.sql.Types.INTEGER);
+            }
+            
             preparedStatement.setString(2, transaction.getTransactionType());
             preparedStatement.setString(3, transaction.getDescription());
             preparedStatement.setDouble(4, transaction.getAmount());
@@ -326,13 +355,11 @@ public class TransactionDAO {
             preparedStatement.setDouble(6, transaction.getBalanceAfter());
             preparedStatement.setString(7, transaction.getReferenceNumber());
             preparedStatement.setString(8, transaction.getStatus());
-            preparedStatement.setTimestamp(9, transaction.getProcessedDate() != null ? 
-                new java.sql.Timestamp(transaction.getProcessedDate().getTime()) : null);
-            preparedStatement.setString(10, transaction.getNotes());
-            preparedStatement.setInt(11, transaction.getTransactionId());
+            preparedStatement.setString(9, transaction.getNotes());
+            preparedStatement.setInt(10, transaction.getTransactionId());
             
             int rowsAffected = preparedStatement.executeUpdate();
-            System.out.println("Transaction updated successfully: " + transaction.getTransactionId());
+            System.out.println("Transaction updated: " + transaction.getTransactionId());
             return rowsAffected > 0;
             
         } catch (SQLException | ClassNotFoundException e) {
@@ -366,7 +393,7 @@ public class TransactionDAO {
             preparedStatement.setInt(1, transactionId);
             
             int rowsAffected = preparedStatement.executeUpdate();
-            System.out.println("Transaction deleted successfully: " + transactionId);
+            System.out.println("Transaction deleted: " + transactionId);
             return rowsAffected > 0;
             
         } catch (SQLException | ClassNotFoundException e) {
@@ -380,29 +407,5 @@ public class TransactionDAO {
                 System.err.println("Error closing resources: " + e.getMessage());
             }
         }
-    }
-    
-    /**
-     * Helper method to map ResultSet to Transaction object
-     * 
-     * @param resultSet The ResultSet to map
-     * @return Transaction object populated from ResultSet
-     * @throws SQLException if ResultSet access fails
-     */
-    private Transaction mapResultSetToTransaction(ResultSet resultSet) throws SQLException {
-        Transaction transaction = new Transaction();
-        transaction.setTransactionId(resultSet.getInt("transaction_id"));
-        transaction.setCustomerId(resultSet.getInt("customer_id"));
-        transaction.setTransactionType(resultSet.getString("transaction_type"));
-        transaction.setDescription(resultSet.getString("description"));
-        transaction.setAmount(resultSet.getDouble("amount"));
-        transaction.setBalanceBefore(resultSet.getDouble("balance_before"));
-        transaction.setBalanceAfter(resultSet.getDouble("balance_after"));
-        transaction.setReferenceNumber(resultSet.getString("reference_number"));
-        transaction.setStatus(resultSet.getString("status"));
-        transaction.setTransactionDate(resultSet.getTimestamp("transaction_date"));
-        transaction.setProcessedDate(resultSet.getTimestamp("processed_date"));
-        transaction.setNotes(resultSet.getString("notes"));
-        return transaction;
     }
 }
