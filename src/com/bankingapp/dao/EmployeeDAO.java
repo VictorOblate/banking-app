@@ -257,6 +257,41 @@ public class EmployeeDAO {
     }
     
     /**
+     * Get total count of employees
+     * 
+     * @return Total number of employees in the system
+     */
+    public int getEmployeeCount() {
+        String sql = "SELECT COUNT(*) as count FROM employees";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("count");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error getting employee count: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+        
+        return 0;
+    }
+    
+    /**
      * Helper method to map ResultSet to Employee object
      * 
      * @param resultSet The ResultSet to map

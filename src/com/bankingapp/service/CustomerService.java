@@ -157,6 +157,15 @@ public class CustomerService {
     }
     
     /**
+     * Get total count of customers
+     * 
+     * @return Total number of customers in the system
+     */
+    public int getCustomerCount() {
+        return customerDAO.getCustomerCount();
+    }
+    
+    /**
      * Generate a unique account number
      * 
      * Format: ACC + 6 random digits

@@ -142,6 +142,86 @@ public class PackageDAO {
     }
     
     /**
+     * Update an existing package
+     * 
+     * @param pkg The Package object with updated data
+     * @return true if package was updated successfully, false otherwise
+     */
+    public boolean updatePackage(Package pkg) {
+        String sql = "UPDATE packages SET package_name = ?, package_type = ?, description = ?, " +
+                     "benefits = ?, monthly_fee = ?, annual_fee = ?, modified_date = ?, is_active = ? " +
+                     "WHERE package_id = ?";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            
+            preparedStatement.setString(1, pkg.getPackageName());
+            preparedStatement.setString(2, pkg.getPackageType());
+            preparedStatement.setString(3, pkg.getDescription());
+            preparedStatement.setString(4, pkg.getBenefits());
+            preparedStatement.setDouble(5, pkg.getMonthlyFee());
+            preparedStatement.setDouble(6, pkg.getAnnualFee());
+            preparedStatement.setTimestamp(7, new java.sql.Timestamp(System.currentTimeMillis()));
+            preparedStatement.setBoolean(8, pkg.isActive());
+            preparedStatement.setInt(9, pkg.getPackageId());
+            
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Package updated successfully: " + pkg.getPackageId());
+            return rowsAffected > 0;
+            
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error updating package: " + e.getMessage());
+            return false;
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+    }
+    
+    /**
+     * Delete a package by ID (soft delete - set inactive)
+     * 
+     * @param packageId The ID of the package to delete
+     * @return true if package was deleted successfully, false otherwise
+     */
+    public boolean deletePackage(int packageId) {
+        String sql = "UPDATE packages SET is_active = FALSE, modified_date = ? WHERE package_id = ?";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
+            preparedStatement.setInt(2, packageId);
+            
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Package deleted (soft delete) successfully: " + packageId);
+            return rowsAffected > 0;
+            
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error deleting package: " + e.getMessage());
+            return false;
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+    }
+    
+    /**
      * Helper method to map ResultSet to Package object
      * 
      * @param resultSet The ResultSet to map

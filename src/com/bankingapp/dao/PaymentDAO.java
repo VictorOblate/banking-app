@@ -299,4 +299,124 @@ public class PaymentDAO {
         payment.setProcessedDate(resultSet.getTimestamp("processed_date"));
         return payment;
     }
+    
+    /**
+     * Get total payments amount for current month
+     * 
+     * @return Total payment amount for the current month
+     */
+    public double getTotalPaymentsThisMonth() {
+        String sql = "SELECT SUM(amount) as total FROM payments WHERE MONTH(payment_date) = MONTH(CURDATE()) AND YEAR(payment_date) = YEAR(CURDATE())";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getDouble("total");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error getting total payments: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+        
+        return 0.0;
+    }
+    
+    /**
+     * Update an existing payment
+     * 
+     * @param payment The Payment object with updated data
+     * @return true if payment was updated successfully, false otherwise
+     */
+    public boolean updatePayment(Payment payment) {
+        String sql = "UPDATE payments SET employee_id = ?, customer_id = ?, payment_type = ?, " +
+                     "payment_description = ?, amount = ?, payment_method = ?, payment_date = ?, " +
+                     "payment_status = ?, reference_number = ?, remarks = ?, processed_date = ? " +
+                     "WHERE payment_id = ?";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            
+            preparedStatement.setInt(1, payment.getEmployeeId());
+            preparedStatement.setInt(2, payment.getCustomerId());
+            preparedStatement.setString(3, payment.getPaymentType());
+            preparedStatement.setString(4, payment.getPaymentDescription());
+            preparedStatement.setDouble(5, payment.getAmount());
+            preparedStatement.setString(6, payment.getPaymentMethod());
+            preparedStatement.setDate(7, payment.getPaymentDate() != null ? 
+                new java.sql.Date(payment.getPaymentDate().getTime()) : null);
+            preparedStatement.setString(8, payment.getStatus());
+            preparedStatement.setString(9, payment.getReferenceNumber());
+            preparedStatement.setString(10, payment.getRemarks());
+            preparedStatement.setTimestamp(11, payment.getProcessedDate() != null ? 
+                new java.sql.Timestamp(payment.getProcessedDate().getTime()) : null);
+            preparedStatement.setInt(12, payment.getPaymentId());
+            
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Payment updated successfully: " + payment.getPaymentId());
+            return rowsAffected > 0;
+            
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error updating payment: " + e.getMessage());
+            return false;
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+    }
+    
+    /**
+     * Delete a payment by ID
+     * 
+     * @param paymentId The ID of the payment to delete
+     * @return true if payment was deleted successfully, false otherwise
+     */
+    public boolean deletePayment(int paymentId) {
+        String sql = "DELETE FROM payments WHERE payment_id = ?";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, paymentId);
+            
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Payment deleted successfully: " + paymentId);
+            return rowsAffected > 0;
+            
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error deleting payment: " + e.getMessage());
+            return false;
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+    }
 }

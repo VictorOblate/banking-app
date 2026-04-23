@@ -138,4 +138,50 @@ public class TransactionPaymentService {
         long timestamp = System.currentTimeMillis();
         return "PAY" + timestamp;
     }
+    
+    /**
+     * Get total count of transactions
+     * 
+     * @return Total number of transactions in the system
+     */
+    public int getTransactionCount() {
+        return transactionDAO.getTransactionCount();
+    }
+    
+    /**
+     * Update an existing transaction
+     * 
+     * @param transaction The Transaction object with updated data
+     * @return true if transaction was updated successfully, false otherwise
+     */
+    public boolean updateTransaction(Transaction transaction) {
+        if (transaction == null || transaction.getTransactionId() <= 0) {
+            System.out.println("Invalid transaction data for update");
+            return false;
+        }
+        return transactionDAO.updateTransaction(transaction);
+    }
+    
+    /**
+     * Delete a transaction by ID
+     * 
+     * @param transactionId The ID of the transaction to delete
+     * @return true if transaction was deleted successfully, false otherwise
+     */
+    public boolean deleteTransaction(int transactionId) {
+        if (transactionId <= 0) {
+            System.out.println("Invalid transaction ID for deletion");
+            return false;
+        }
+        return transactionDAO.deleteTransaction(transactionId);
+    }
+    
+    /**
+     * Get total payments amount for current month
+     * 
+     * @return Total payment amount for the current month
+     */
+    public double getTotalPaymentsThisMonth() {
+        return paymentDAO.getTotalPaymentsThisMonth();
+    }
 }

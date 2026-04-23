@@ -172,6 +172,15 @@ public class EmployeeService {
     }
     
     /**
+     * Get total count of employees
+     * 
+     * @return Total number of employees in the system
+     */
+    public int getEmployeeCount() {
+        return employeeDAO.getEmployeeCount();
+    }
+    
+    /**
      * Generate a unique employee code
      * 
      * Format: EMP + 3 digit random number

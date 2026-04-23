@@ -140,6 +140,85 @@ public class ShiftDAO {
     }
     
     /**
+     * Update an existing shift
+     * 
+     * @param shift The Shift object with updated data
+     * @return true if shift was updated successfully, false otherwise
+     */
+    public boolean updateShift(Shift shift) {
+        String sql = "UPDATE shifts SET shift_name = ?, start_time = ?, end_time = ?, " +
+                     "shift_type = ?, description = ?, modified_date = ?, is_active = ? " +
+                     "WHERE shift_id = ?";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            
+            preparedStatement.setString(1, shift.getShiftName());
+            preparedStatement.setString(2, shift.getStartTime());
+            preparedStatement.setString(3, shift.getEndTime());
+            preparedStatement.setString(4, shift.getShiftType());
+            preparedStatement.setString(5, shift.getDescription());
+            preparedStatement.setTimestamp(6, new java.sql.Timestamp(System.currentTimeMillis()));
+            preparedStatement.setBoolean(7, shift.isActive());
+            preparedStatement.setInt(8, shift.getShiftId());
+            
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Shift updated successfully: " + shift.getShiftId());
+            return rowsAffected > 0;
+            
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error updating shift: " + e.getMessage());
+            return false;
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+    }
+    
+    /**
+     * Delete a shift by ID (soft delete - set inactive)
+     * 
+     * @param shiftId The ID of the shift to delete
+     * @return true if shift was deleted successfully, false otherwise
+     */
+    public boolean deleteShift(int shiftId) {
+        String sql = "UPDATE shifts SET is_active = FALSE, modified_date = ? WHERE shift_id = ?";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
+            preparedStatement.setInt(2, shiftId);
+            
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Shift deleted (soft delete) successfully: " + shiftId);
+            return rowsAffected > 0;
+            
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error deleting shift: " + e.getMessage());
+            return false;
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+    }
+    
+    /**
      * Helper method to map ResultSet to Shift object
      * 
      * @param resultSet The ResultSet to map

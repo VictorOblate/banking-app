@@ -266,6 +266,123 @@ public class TransactionDAO {
     }
     
     /**
+     * Get total count of transactions
+     * 
+     * @return Total number of transactions in the system
+     */
+    public int getTransactionCount() {
+        String sql = "SELECT COUNT(*) as count FROM transactions";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("count");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error getting transaction count: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+        
+        return 0;
+    }
+    
+    /**
+     * Update an existing transaction
+     * 
+     * @param transaction The Transaction object with updated data
+     * @return true if transaction was updated successfully, false otherwise
+     */
+    public boolean updateTransaction(Transaction transaction) {
+        String sql = "UPDATE transactions SET customer_id = ?, transaction_type = ?, description = ?, " +
+                     "amount = ?, balance_before = ?, balance_after = ?, reference_number = ?, " +
+                     "status = ?, processed_date = ?, notes = ? WHERE transaction_id = ?";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            
+            preparedStatement.setInt(1, transaction.getCustomerId());
+            preparedStatement.setString(2, transaction.getTransactionType());
+            preparedStatement.setString(3, transaction.getDescription());
+            preparedStatement.setDouble(4, transaction.getAmount());
+            preparedStatement.setDouble(5, transaction.getBalanceBefore());
+            preparedStatement.setDouble(6, transaction.getBalanceAfter());
+            preparedStatement.setString(7, transaction.getReferenceNumber());
+            preparedStatement.setString(8, transaction.getStatus());
+            preparedStatement.setTimestamp(9, transaction.getProcessedDate() != null ? 
+                new java.sql.Timestamp(transaction.getProcessedDate().getTime()) : null);
+            preparedStatement.setString(10, transaction.getNotes());
+            preparedStatement.setInt(11, transaction.getTransactionId());
+            
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Transaction updated successfully: " + transaction.getTransactionId());
+            return rowsAffected > 0;
+            
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error updating transaction: " + e.getMessage());
+            return false;
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+    }
+    
+    /**
+     * Delete a transaction by ID
+     * 
+     * @param transactionId The ID of the transaction to delete
+     * @return true if transaction was deleted successfully, false otherwise
+     */
+    public boolean deleteTransaction(int transactionId) {
+        String sql = "DELETE FROM transactions WHERE transaction_id = ?";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, transactionId);
+            
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Transaction deleted successfully: " + transactionId);
+            return rowsAffected > 0;
+            
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error deleting transaction: " + e.getMessage());
+            return false;
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+    }
+    
+    /**
      * Helper method to map ResultSet to Transaction object
      * 
      * @param resultSet The ResultSet to map

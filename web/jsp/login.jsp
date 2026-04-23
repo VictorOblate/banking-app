@@ -4,141 +4,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Banking - Login</title>
+    <title>Basotho Ownership Bank - Admin Login</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <style>
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-green);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            min-height: 100vh;
+            padding: 2rem;
         }
-        .login-container {
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        .login-wrapper {
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
+        }
+        .login-box {
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 2.5rem;
         }
         .login-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 2rem;
+        }
+        .login-logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .login-logo svg {
+            width: 50px;
+            height: 50px;
         }
         .login-header h1 {
-            color: #333;
-            margin: 0;
-            font-size: 28px;
+            color: var(--primary-green);
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
         }
         .login-header p {
-            color: #999;
-            margin: 5px 0 0 0;
-            font-size: 14px;
+            color: var(--medium-gray);
+            margin: 0;
+            font-size: 0.95rem;
         }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
-        }
-        .form-group input[type="text"],
-        .form-group input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-            box-sizing: border-box;
-            transition: border-color 0.3s;
-        }
-        .form-group input[type="text"]:focus,
-        .form-group input[type="password"]:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+        .login-form input {
+            margin-bottom: 1rem;
         }
         .btn-login {
+            background-color: var(--primary-green);
+            color: var(--white);
             width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            padding: 0.85rem;
             border: none;
-            border-radius: 5px;
-            font-size: 16px;
+            border-radius: 4px;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
         }
         .btn-login:hover {
+            background-color: var(--soft-green);
             transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(45, 122, 79, 0.2);
         }
-        .btn-login:active {
-            transform: translateY(0);
+        .demo-credentials {
+            background-color: var(--light-gray);
+            border-left: 4px solid var(--primary-green);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
         }
-        .error-message {
-            background-color: #f8d7da;
-            color: #721c24;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            border: 1px solid #f5c6cb;
-        }
-        .success-message {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            border: 1px solid #c3e6cb;
+        .demo-credentials strong {
+            color: var(--primary-green);
         }
     </style>
 </head>
 <body>
-<div class="login-container">
-    <!-- Login Header -->
-    <div class="login-header">
-        <h1>🏦 Online Banking</h1>
-        <p>Admin Portal</p>
-    </div>
-    
-    <!-- Error Message -->
-    <%
-        String error = (String) request.getAttribute("error");
-        if (error != null) {
-    %>
-    <div class="error-message">
-        <%= error %>
-    </div>
-    <%
-        }
-    %>
-    
-    <!-- Login Form -->
-    <form method="POST" action="${pageContext.request.contextPath}/login">
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+    <div class="login-wrapper">
+        <div class="login-box">
+            <!-- Login Header -->
+            <div class="login-header">
+                <div class="login-logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="95" fill="#f5f5f5" stroke="#2d7a4f" stroke-width="2"/>
+                        <circle cx="100" cy="100" r="88" fill="none" stroke="#4caf50" stroke-width="1.5" opacity="0.3"/>
+                        <path d="M 100 40 L 140 60 L 140 90 Q 100 130 100 130 Q 100 130 60 90 L 60 60 Z" fill="none" stroke="#2d7a4f" stroke-width="2.5"/>
+                        <circle cx="100" cy="85" r="12" fill="#4caf50"/>
+                        <rect x="93" y="95" width="14" height="20" fill="none" stroke="#2d7a4f" stroke-width="1.5" rx="2"/>
+                        <text x="100" y="155" font-size="9" font-weight="bold" text-anchor="middle" fill="#2d7a4f">BASH</text>
+                    </svg>
+                </div>
+                <h1>Basotho Bank</h1>
+                <p>Admin Portal - Secure Login</p>
+            </div>
+            
+            <!-- Error Message -->
+            <%
+                String error = (String) request.getAttribute("error");
+                if (error != null) {
+            %>
+                <div class="alert alert-error">
+                    <strong>Access Denied:</strong> <%= error %>
+                </div>
+            <%
+                }
+            %>
+            
+            <!-- Login Form -->
+            <form method="POST" action="${pageContext.request.contextPath}/login" class="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" 
+                           placeholder="Enter your username" 
+                           required autofocus>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" 
+                           placeholder="Enter your password" 
+                           required>
+                </div>
+                
+                <button type="submit" class="btn-login">Sign In</button>
+            </form>
+            
+            <!-- Demo Credentials -->
+            <div class="demo-credentials">
+                <strong>Demo Credentials:</strong>
+                <div style="margin-top: 0.5rem;">
+                    <div>Username: <strong>admin</strong></div>
+                    <div>Password: <strong>admin123</strong></div>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div style="text-align: center; margin-top: 1.5rem; color: var(--medium-gray); font-size: 0.85rem;">
+                <p style="margin: 0;">
+                    Basotho Ownership Bank © 2026
+                </p>
+                <p style="margin: 0.5rem 0 0 0;">
+                    <a href="/" style="color: var(--primary-green);">Return to Home</a>
+                </p>
+            </div>
         </div>
-        
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter your password" required>
-        </div>
-        
-        <button type="submit" class="btn-login">Login</button>
-    </form>
-    
-    <div style="text-align: center; margin-top: 30px; color: #999; font-size: 12px;">
-        <p>Demo Credentials:</p>
-        <p>Username: <strong>admin</strong></p>
-        <p>Password: <strong>admin123</strong></p>
     </div>
-</div>
 </body>
 </html>
