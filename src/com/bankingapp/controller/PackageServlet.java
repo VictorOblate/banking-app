@@ -106,8 +106,8 @@ public class PackageServlet extends HttpServlet {
 
             // Get statistics
             int totalPackages = packageService.getPackageCount();
-            int activePackages = 0; // TODO: Implement active count
-            double totalValue = 0.0; // TODO: Implement total value
+            int activePackages = packageService.getActivePackagesCount();
+            double totalValue = packageService.getTotalPackageValue();
 
             request.setAttribute("totalPackages", totalPackages);
             request.setAttribute("activePackages", activePackages);

@@ -277,4 +277,75 @@ public class PackageDAO {
         
         return 0;
     }
+    
+    /**
+     * Get count of active packages
+     * 
+     * @return Number of active packages
+     */
+    public int getActivePackagesCount() {
+        String sql = "SELECT COUNT(*) as count FROM packages WHERE is_active = TRUE";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("count");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error getting active packages count: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+        
+        return 0;
+    }
+    
+    /**
+     * Get total value from all annual fees
+     * 
+     * @return Total value from annual fees
+     */
+    public double getTotalPackageValue() {
+        String sql = "SELECT SUM(annual_fee) as total FROM packages WHERE is_active = TRUE";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                double total = resultSet.getDouble("total");
+                return total > 0 ? total : 0.0;
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error getting total package value: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+        
+        return 0.0;
+    }
 }

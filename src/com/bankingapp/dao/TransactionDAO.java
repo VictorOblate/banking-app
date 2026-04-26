@@ -408,4 +408,111 @@ public class TransactionDAO {
             }
         }
     }
+    
+    /**
+     * Get count of transactions made today
+     * 
+     * @return Number of transactions made today
+     */
+    public int getTransactionCountToday() {
+        String sql = "SELECT COUNT(*) as count FROM transactions WHERE DATE(transaction_date) = CURDATE()";
+        
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(sql);
+            
+            if (resultSet.next()) {
+                return resultSet.getInt("count");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error getting today transaction count: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+        
+        return 0;
+    }
+    
+    /**
+     * Get total amount of transactions made today
+     * 
+     * @return Total transaction amount for today
+     */
+    public double getTotalTransactionsAmountToday() {
+        String sql = "SELECT SUM(amount) as total FROM transactions WHERE DATE(transaction_date) = CURDATE()";
+        
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(sql);
+            
+            if (resultSet.next()) {
+                double total = resultSet.getDouble("total");
+                return total > 0 ? total : 0.0;
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error getting today transaction total: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+        
+        return 0.0;
+    }
+    
+    /**
+     * Get total amount of all transactions
+     * 
+     * @return Total transaction amount
+     */
+    public double getTotalTransactionsAmount() {
+        String sql = "SELECT SUM(amount) as total FROM transactions";
+        
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(sql);
+            
+            if (resultSet.next()) {
+                double total = resultSet.getDouble("total");
+                return total > 0 ? total : 0.0;
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error getting transaction total: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+        
+        return 0.0;
+    }
 }

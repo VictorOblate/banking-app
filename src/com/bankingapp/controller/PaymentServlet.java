@@ -106,9 +106,9 @@ public class PaymentServlet extends HttpServlet {
 
             // Get statistics
             int totalPayments = paymentService.getPaymentCount();
-            int todayPayments = 0; // TODO: Implement today count
-            double totalAmount = 0.0; // TODO: Implement total amount
-            double todayAmount = 0.0; // TODO: Implement today amount
+            int todayPayments = paymentService.getPaymentCountToday();
+            double totalAmount = paymentService.getTotalPaymentsThisMonth();
+            double todayAmount = paymentService.getTotalPaymentsAmountToday();
 
             request.setAttribute("totalPayments", totalPayments);
             request.setAttribute("todayPayments", todayPayments);

@@ -201,4 +201,40 @@ public class PackageShiftService {
     public int getShiftCount() {
         return shiftDAO.getShiftCount();
     }
+    
+    /**
+     * Get count of active packages
+     * 
+     * @return Number of active packages
+     */
+    public int getActivePackagesCount() {
+        return packageDAO.getActivePackagesCount();
+    }
+    
+    /**
+     * Get total value from all active packages
+     * 
+     * @return Total value from annual fees
+     */
+    public double getTotalPackageValue() {
+        return packageDAO.getTotalPackageValue();
+    }
+    
+    /**
+     * Get count of active shifts
+     * 
+     * @return Number of active shifts
+     */
+    public int getActiveShiftsCount() {
+        return shiftDAO.getActiveShiftsCount();
+    }
+    
+    /**
+     * Get count of shifts scheduled for today
+     * 
+     * @return Number of shifts scheduled for today
+     */
+    public int getTodayShiftsCount() {
+        return shiftDAO.getTodayShiftsCount();
+    }
 }

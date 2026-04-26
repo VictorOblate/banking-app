@@ -99,9 +99,9 @@ public class TransactionServlet extends HttpServlet {
 
             // Get statistics
             int totalTransactions = transactionService.getTransactionCount();
-            int todayTransactions = 0; // TODO: Implement today count
-            double totalAmount = 0.0; // TODO: Implement total amount
-            double todayAmount = 0.0; // TODO: Implement today amount
+            int todayTransactions = transactionService.getTransactionCountToday();
+            double totalAmount = transactionService.getTotalTransactionsAmount();
+            double todayAmount = transactionService.getTotalTransactionsAmountToday();
 
             request.setAttribute("totalTransactions", totalTransactions);
             request.setAttribute("todayTransactions", todayTransactions);

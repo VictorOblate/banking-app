@@ -230,4 +230,49 @@ public class TransactionPaymentService {
     public int getPaymentCount() {
         return paymentDAO.getPaymentCount();
     }
+    
+    /**
+     * Get count of payments made today
+     * 
+     * @return Number of payments made today
+     */
+    public int getPaymentCountToday() {
+        return paymentDAO.getPaymentCountToday();
+    }
+    
+    /**
+     * Get total amount of payments made today
+     * 
+     * @return Total payment amount for today
+     */
+    public double getTotalPaymentsAmountToday() {
+        return paymentDAO.getTotalPaymentsAmountToday();
+    }
+    
+    /**
+     * Get count of transactions made today
+     * 
+     * @return Number of transactions made today
+     */
+    public int getTransactionCountToday() {
+        return transactionDAO.getTransactionCountToday();
+    }
+    
+    /**
+     * Get total amount of transactions made today
+     * 
+     * @return Total transaction amount for today
+     */
+    public double getTotalTransactionsAmountToday() {
+        return transactionDAO.getTotalTransactionsAmountToday();
+    }
+    
+    /**
+     * Get total amount of all transactions
+     * 
+     * @return Total transaction amount
+     */
+    public double getTotalTransactionsAmount() {
+        return transactionDAO.getTotalTransactionsAmount();
+    }
 }

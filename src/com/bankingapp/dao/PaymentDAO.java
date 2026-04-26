@@ -459,4 +459,76 @@ public class PaymentDAO {
         
         return 0;
     }
+    
+    /**
+     * Get count of payments made today
+     * 
+     * @return Number of payments made today
+     */
+    public int getPaymentCountToday() {
+        String sql = "SELECT COUNT(*) as count FROM payments WHERE DATE(payment_date) = CURDATE()";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("count");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error getting today payment count: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+        
+        return 0;
+    }
+    
+    /**
+     * Get total amount of payments made today
+     * 
+     * @return Total payment amount for today
+     */
+    public double getTotalPaymentsAmountToday() {
+        String sql = "SELECT SUM(amount) as total FROM payments WHERE DATE(payment_date) = CURDATE()";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                double total = resultSet.getDouble("total");
+                return total > 0 ? total : 0.0;
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error getting today payment total: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+        
+        return 0.0;
+    }
 }
+

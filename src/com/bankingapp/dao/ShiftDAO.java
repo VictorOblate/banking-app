@@ -273,4 +273,74 @@ public class ShiftDAO {
         
         return 0;
     }
+    
+    /**
+     * Get count of active shifts
+     * 
+     * @return Number of active shifts
+     */
+    public int getActiveShiftsCount() {
+        String sql = "SELECT COUNT(*) as count FROM shifts WHERE is_active = TRUE";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("count");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error getting active shifts count: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+        
+        return 0;
+    }
+    
+    /**
+     * Get count of shifts scheduled for today
+     * 
+     * @return Number of shifts scheduled for today
+     */
+    public int getTodayShiftsCount() {
+        String sql = "SELECT COUNT(*) as count FROM shifts WHERE DATE(shift_date) = CURDATE() AND is_active = TRUE";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("count");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error getting today shifts count: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+        
+        return 0;
+    }
 }

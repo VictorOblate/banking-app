@@ -99,8 +99,8 @@ public class ShiftServlet extends HttpServlet {
 
             // Get statistics
             int totalShifts = shiftService.getShiftCount();
-            int activeShifts = 0; // TODO: Implement active count
-            int todayShifts = 0; // TODO: Implement today count
+            int activeShifts = shiftService.getActiveShiftsCount();
+            int todayShifts = shiftService.getTodayShiftsCount();
 
             request.setAttribute("totalShifts", totalShifts);
             request.setAttribute("activeShifts", activeShifts);
