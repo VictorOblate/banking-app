@@ -25,7 +25,7 @@
 </head>
 <body>
     <!-- Include Header -->
-    <%@ include file="../components/header.jsp" %>
+    <%@ include file="/jsp/components/header.jsp" %>
 
     <!-- Main Content -->
     <main class="container">
@@ -173,7 +173,7 @@
     </main>
 
     <!-- Include Footer -->
-    <%@ include file="../components/footer.jsp" %>
+    <%@ include file="/jsp/components/footer.jsp" %>
 
     <script src="${pageContext.request.contextPath}/js/main.js"></script>
 </body>

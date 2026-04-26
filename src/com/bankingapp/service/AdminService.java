@@ -3,16 +3,6 @@ package com.bankingapp.service;
 import com.bankingapp.dao.AdminDAO;
 import com.bankingapp.model.Admin;
 
-/**
- * Admin Service Class
- * 
- * Contains business logic for admin-related operations.
- * Handles authentication and admin management.
- * Acts as intermediary between controllers and DAO layer.
- * 
- * @author Banking App Development Team
- * @version 1.0
- */
 public class AdminService {
     
     private AdminDAO adminDAO;
