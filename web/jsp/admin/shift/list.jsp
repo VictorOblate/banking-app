@@ -7,12 +7,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shift Management - Basotho Ownership Bank</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <link rel="icon" href="${pageContext.request.contextPath}/images/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <!-- Include Header -->
-    <%@ include file="../components/header.jsp" %>
+    <%@ include file="/jsp/components/header.jsp" %>
 
     <main class="main-content">
         <div class="container">
@@ -193,6 +193,6 @@
     </main>
 
     <!-- Include Footer -->
-    <%@ include file="../components/footer.jsp" %>
+    <%@ include file="/jsp/components/footer.jsp" %>
 </body>
 </html>
