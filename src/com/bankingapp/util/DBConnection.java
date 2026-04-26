@@ -27,7 +27,7 @@ public class DBConnection {
     
     // Database Configuration Constants
     private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/banking_db";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/banking_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
     private static final String DB_USERNAME = "root";
     private static final String DB_PASSWORD = "root";
     
