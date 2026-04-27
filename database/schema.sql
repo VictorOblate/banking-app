@@ -11,7 +11,7 @@ CREATE DATABASE IF NOT EXISTS banking_db;
 USE banking_db;
 
 -- ====================================================================
--- DROP EXISTING TABLES (in reverse dependency order)
+-- DROP EXISTING TABLES (in reverse dependency order) sdkjfhdkjhsfhw
 -- ====================================================================
 -- Disable foreign key checks to avoid constraint errors during deletion
 SET FOREIGN_KEY_CHECKS=0;
