@@ -11,6 +11,24 @@ CREATE DATABASE IF NOT EXISTS banking_db;
 USE banking_db;
 
 -- ====================================================================
+-- DROP EXISTING TABLES (in reverse dependency order)
+-- ====================================================================
+-- Disable foreign key checks to avoid constraint errors during deletion
+SET FOREIGN_KEY_CHECKS=0;
+
+DROP TABLE IF EXISTS activity_log;
+DROP TABLE IF EXISTS payments;
+DROP TABLE IF EXISTS transactions;
+DROP TABLE IF EXISTS employees;
+DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS shifts;
+DROP TABLE IF EXISTS packages;
+DROP TABLE IF EXISTS admin;
+
+-- Re-enable foreign key checks
+SET FOREIGN_KEY_CHECKS=1;
+
+-- ====================================================================
 -- TABLE: admin
 -- Purpose: Store admin user credentials and information
 -- ====================================================================
