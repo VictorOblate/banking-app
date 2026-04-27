@@ -132,6 +132,12 @@ public class ReportServlet extends HttpServlet {
 
             request.setAttribute("stats", stats);
 
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+
             // Forward to report list page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/report/list.jsp");
             dispatcher.forward(request, response);
@@ -139,6 +145,13 @@ public class ReportServlet extends HttpServlet {
         } catch (Exception e) {
             System.err.println("Error listing reports: " + e.getMessage());
             request.setAttribute("error", Constants.ERROR_DATABASE);
+            
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+            
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/report/list.jsp");
             dispatcher.forward(request, response);
         }

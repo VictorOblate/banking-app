@@ -1,13 +1,17 @@
 <%@ page language="java" pageEncoding="UTF-8" %>
+<%@ page import="com.bankingapp.model.Admin" %>
+<%@ page import="com.bankingapp.util.Constants" %>
 <%
-    // Get session admin
-    com.bankingapp.model.Admin admin = null;
-    Object sessionAdmin = session.getAttribute(com.bankingapp.util.Constants.ADMIN_SESSION);
-    if (sessionAdmin != null) {
-        admin = (com.bankingapp.model.Admin) sessionAdmin;
-    } else {
-        response.sendRedirect(request.getContextPath() + "/login");
-        return;
+    // Get admin from request attribute (set by servlet) or session
+    Admin admin = (Admin) request.getAttribute("admin");
+    if (admin == null) {
+        Object sessionAdmin = session.getAttribute(Constants.ADMIN_SESSION);
+        if (sessionAdmin != null && sessionAdmin instanceof Admin) {
+            admin = (Admin) sessionAdmin;
+        } else {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
     }
 %>
 
