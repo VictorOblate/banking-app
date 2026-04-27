@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.banking.model.Package" %>
+<%@ page import="com.bankingapp.model.Package" %>
 <%@ page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -142,8 +142,8 @@
                                 <td><%= pkg.getDescription() != null ? pkg.getDescription() : "N/A" %></td>
                                 <td class="amount">LSL <%= currencyFormat.format(pkg.getMonthlyFee()) %></td>
                                 <td>
-                                    <span class="status status-<%= pkg.getStatus() != null ? pkg.getStatus().toLowerCase() : "inactive" %>">
-                                        <%= pkg.getStatus() != null ? pkg.getStatus() : "Inactive" %>
+                                    <span class="badge <%= pkg.isActive() ? "badge-success" : "badge-inactive" %>">
+                                        <%= pkg.isActive() ? "Active" : "Inactive" %>
                                     </span>
                                 </td>
                                 <td>

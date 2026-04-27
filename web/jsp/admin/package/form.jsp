@@ -139,10 +139,10 @@
 
                     <!-- Status -->
                     <div class="form-group mb-4">
-                        <label for="status">Status</label>
-                        <select id="status" name="status" <%= isReadOnly ? "disabled" : "" %>>
-                            <option value="ACTIVE" <%= isEditMode2 && pkg != null && pkg.isActive() ? "selected" : "" %>>Active</option>
-                            <option value="INACTIVE" <%= isEditMode2 && pkg != null && !pkg.isActive() ? "selected" : "" %>>Inactive</option>
+                        <label for="isActive">Status</label>
+                        <select id="isActive" name="isActive" <%= isReadOnly ? "disabled" : "" %>>
+                            <option value="true" <%= isEditMode2 && pkg != null && pkg.isActive() ? "selected" : "" %>>Active</option>
+                            <option value="false" <%= isEditMode2 && pkg != null && !pkg.isActive() ? "selected" : "" %>>Inactive</option>
                         </select>
                     </div>
 

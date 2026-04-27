@@ -1,8 +1,17 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.banking.model.Payment" %>
+<%@ page import="com.bankingapp.model.Payment" %>
+<%@ page import="com.bankingapp.util.Constants" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.text.DecimalFormat" %>
+<%
+    // Check if user is logged in
+    com.bankingapp.model.Admin admin = (com.bankingapp.model.Admin) session.getAttribute(Constants.ADMIN_SESSION);
+    if (admin == null) {
+        response.sendRedirect(request.getContextPath() + "/login");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>

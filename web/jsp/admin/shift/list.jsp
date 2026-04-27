@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.banking.model.Shift" %>
+<%@ page import="com.bankingapp.model.Shift" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>

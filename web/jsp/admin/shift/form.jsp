@@ -130,20 +130,13 @@
                         <textarea id="description" name="description" rows="3" <%= isReadOnly ? "readonly" : "" %>><%= isEditMode2 && shift != null && shift.getDescription() != null ? shift.getDescription() : "" %></textarea>
                     </div>
 
-                    <!-- Status and Notes -->
-                    <div class="grid grid-2 mb-4">
-                        <div class="form-group">
-                            <label for="status">Status</label>
-                            <select id="status" name="status" <%= isReadOnly ? "disabled" : "" %>>
-                                <option value="ACTIVE" <%= isEditMode2 && shift != null && shift.isActive() ? "selected" : "" %>>Active</option>
-                                <option value="INACTIVE" <%= isEditMode2 && shift != null && !shift.isActive() ? "selected" : "" %>>Inactive</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="notes">Notes</label>
-                            <input type="text" id="notes" name="notes" <%= isReadOnly ? "readonly" : "" %>
-                                   value="<%= isEditMode2 && shift != null && shift.getDescription() != null ? shift.getDescription() : "" %>">
-                        </div>
+                    <!-- Active Status -->
+                    <div class="form-group mb-4">
+                        <label for="isActive">Status</label>
+                        <select id="isActive" name="isActive" <%= isReadOnly ? "disabled" : "" %>>
+                            <option value="true" <%= isEditMode2 && shift != null && shift.isActive() ? "selected" : "" %>>Active</option>
+                            <option value="false" <%= isEditMode2 && shift != null && !shift.isActive() ? "selected" : "" %>>Inactive</option>
+                        </select>
                     </div>
 
                     <!-- Form Actions -->

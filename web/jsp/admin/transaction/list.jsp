@@ -1,8 +1,17 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.banking.model.Transaction" %>
+<%@ page import="com.bankingapp.model.Transaction" %>
+<%@ page import="com.bankingapp.util.Constants" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.text.DecimalFormat" %>
+<%
+    // Check if user is logged in
+    com.bankingapp.model.Admin admin = (com.bankingapp.model.Admin) session.getAttribute(Constants.ADMIN_SESSION);
+    if (admin == null) {
+        response.sendRedirect(request.getContextPath() + "/login");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -140,7 +149,7 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Account Number</th>
+                                <th>Customer ID</th>
                                 <th>Type</th>
                                 <th>Amount</th>
                                 <th>Date</th>
@@ -155,7 +164,7 @@
                             %>
                             <tr>
                                 <td><%= transaction.getTransactionId() %></td>
-                                <td><%= transaction.getAccountNumber() != null ? transaction.getAccountNumber() : "N/A" %></td>
+                                <td><%= transaction.getCustomerId() %></td>
                                 <td>
                                     <span class="badge badge-<%= transaction.getTransactionType() != null ? transaction.getTransactionType().toLowerCase() : "default" %>">
                                         <%= transaction.getTransactionType() != null ? transaction.getTransactionType() : "N/A" %>
