@@ -70,6 +70,12 @@ public class Constants {
     /** Employee add/edit form page */
     public static final String PAGE_EMPLOYEE_FORM = "/jsp/admin/employee/form.jsp";
     
+    /** Admin list page */
+    public static final String PAGE_ADMIN_LIST = "/jsp/admin/admin/list.jsp";
+    
+    /** Admin add/edit form page */
+    public static final String PAGE_ADMIN_FORM = "/jsp/admin/admin/form.jsp";
+    
     // ===== ERROR MESSAGES =====
     /** Invalid login credentials */
     public static final String ERROR_INVALID_LOGIN = "Invalid username or password";

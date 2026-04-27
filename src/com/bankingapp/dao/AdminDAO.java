@@ -197,4 +197,229 @@ public class AdminDAO {
         
         return false;
     }
+    
+    /**
+     * Add a new admin user to the database
+     * 
+     * @param admin The Admin object containing admin data
+     * @return true if admin was added successfully, false otherwise
+     */
+    public boolean addAdmin(Admin admin) {
+        String sql = "INSERT INTO admin (username, password, full_name, email, phone, is_active) " +
+                     "VALUES (?, ?, ?, ?, ?, ?)";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            
+            preparedStatement.setString(1, admin.getUsername());
+            preparedStatement.setString(2, admin.getPassword());
+            preparedStatement.setString(3, admin.getFullName());
+            preparedStatement.setString(4, admin.getEmail());
+            preparedStatement.setString(5, admin.getPhone());
+            preparedStatement.setBoolean(6, admin.isActive());
+            
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Admin added successfully: " + admin.getUsername());
+            return rowsAffected > 0;
+            
+        } catch (SQLException e) {
+            System.err.println("Error adding admin: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } catch (ClassNotFoundException e) {
+            System.err.println("Database driver not found: " + e.getMessage());
+            return false;
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+    }
+    
+    /**
+     * Update admin information
+     * 
+     * @param admin The Admin object with updated information
+     * @return true if update was successful, false otherwise
+     */
+    public boolean updateAdmin(Admin admin) {
+        String sql = "UPDATE admin SET full_name = ?, email = ?, phone = ?, password = ?, is_active = ?, " +
+                     "modified_date = NOW() WHERE admin_id = ?";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            
+            preparedStatement.setString(1, admin.getFullName());
+            preparedStatement.setString(2, admin.getEmail());
+            preparedStatement.setString(3, admin.getPhone());
+            preparedStatement.setString(4, admin.getPassword());
+            preparedStatement.setBoolean(5, admin.isActive());
+            preparedStatement.setInt(6, admin.getAdminId());
+            
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Admin updated successfully: " + admin.getUsername());
+            return rowsAffected > 0;
+            
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error updating admin: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+    }
+    
+    /**
+     * Delete/Deactivate an admin user (soft delete)
+     * 
+     * This method deactivates an admin account instead of permanently deleting it
+     * to maintain audit trail integrity.
+     * 
+     * @param adminId The ID of the admin to deactivate
+     * @return true if deletion was successful, false otherwise
+     */
+    public boolean deleteAdmin(int adminId) {
+        String sql = "UPDATE admin SET is_active = FALSE, modified_date = NOW() WHERE admin_id = ?";
+        
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, adminId);
+            
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Admin deactivated successfully: " + adminId);
+            return rowsAffected > 0;
+            
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error deleting admin: " + e.getMessage());
+            return false;
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+    }
+    
+    /**
+     * Get all admin users (active and inactive)
+     * 
+     * @return List of all Admin objects
+     */
+    public java.util.List<Admin> getAllAdmins() {
+        String sql = "SELECT admin_id, username, password, full_name, email, phone, " +
+                     "created_date, last_login, is_active FROM admin ORDER BY username ASC";
+        
+        java.util.List<Admin> admins = new java.util.ArrayList<>();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            
+            while (resultSet.next()) {
+                Admin admin = new Admin();
+                admin.setAdminId(resultSet.getInt("admin_id"));
+                admin.setUsername(resultSet.getString("username"));
+                admin.setPassword(resultSet.getString("password"));
+                admin.setFullName(resultSet.getString("full_name"));
+                admin.setEmail(resultSet.getString("email"));
+                admin.setPhone(resultSet.getString("phone"));
+                admin.setCreatedDate(resultSet.getTimestamp("created_date"));
+                admin.setLastLogin(resultSet.getTimestamp("last_login"));
+                admin.setActive(resultSet.getBoolean("is_active"));
+                
+                admins.add(admin);
+            }
+            
+            System.out.println("Retrieved " + admins.size() + " admins from database");
+            return admins;
+            
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error retrieving all admins: " + e.getMessage());
+            return admins;
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+    }
+    
+    /**
+     * Get all active admin users only
+     * 
+     * @return List of active Admin objects
+     */
+    public java.util.List<Admin> getActiveAdmins() {
+        String sql = "SELECT admin_id, username, password, full_name, email, phone, " +
+                     "created_date, last_login, is_active FROM admin WHERE is_active = TRUE ORDER BY username ASC";
+        
+        java.util.List<Admin> admins = new java.util.ArrayList<>();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        
+        try {
+            connection = DBConnection.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            
+            while (resultSet.next()) {
+                Admin admin = new Admin();
+                admin.setAdminId(resultSet.getInt("admin_id"));
+                admin.setUsername(resultSet.getString("username"));
+                admin.setPassword(resultSet.getString("password"));
+                admin.setFullName(resultSet.getString("full_name"));
+                admin.setEmail(resultSet.getString("email"));
+                admin.setPhone(resultSet.getString("phone"));
+                admin.setCreatedDate(resultSet.getTimestamp("created_date"));
+                admin.setLastLogin(resultSet.getTimestamp("last_login"));
+                admin.setActive(resultSet.getBoolean("is_active"));
+                
+                admins.add(admin);
+            }
+            
+            return admins;
+            
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error retrieving active admins: " + e.getMessage());
+            return admins;
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+    }
 }

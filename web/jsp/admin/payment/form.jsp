@@ -127,27 +127,47 @@
 
                     <!-- Payment Description -->
                     <div class="form-group mb-4">
-                        <label for="description">Description <span style="color: var(--error-red);">*</span></label>
-                        <textarea id="description" name="description" rows="3" required <%= isReadOnly ? "readonly" : "" %>><%= isEditMode2 && payment != null && payment.getDescription() != null ? payment.getDescription() : "" %></textarea>
+                        <label for="paymentDescription">Description <span style="color: var(--error-red);">*</span></label>
+                        <textarea id="paymentDescription" name="paymentDescription" rows="3" required <%= isReadOnly ? "readonly" : "" %>><%= isEditMode2 && payment != null && payment.getPaymentDescription() != null ? payment.getPaymentDescription() : "" %></textarea>
                     </div>
 
-                    <!-- Status and Notes -->
+                    <!-- Payment Method and Date -->
                     <div class="grid grid-2 mb-4">
                         <div class="form-group">
-                            <label for="status">Status</label>
-                            <select id="status" name="status" <%= isReadOnly ? "disabled" : "" %>>
-                                <option value="PENDING" <%= isEditMode2 && payment != null && "PENDING".equals(payment.getStatus()) ? "selected" : "" %>>Pending</option>
-                                <option value="PROCESSED" <%= isEditMode2 && payment != null && "PROCESSED".equals(payment.getStatus()) ? "selected" : "" %>>Processed</option>
-                                <option value="COMPLETED" <%= isEditMode2 && payment != null && "COMPLETED".equals(payment.getStatus()) ? "selected" : "" %>>Completed</option>
-                                <option value="FAILED" <%= isEditMode2 && payment != null && "FAILED".equals(payment.getStatus()) ? "selected" : "" %>>Failed</option>
-                                <option value="CANCELLED" <%= isEditMode2 && payment != null && "CANCELLED".equals(payment.getStatus()) ? "selected" : "" %>>Cancelled</option>
+                            <label for="paymentMethod">Payment Method</label>
+                            <input type="text" id="paymentMethod" name="paymentMethod" <%= isReadOnly ? "readonly" : "" %>
+                                   value="<%= isEditMode2 && payment != null && payment.getPaymentMethod() != null ? payment.getPaymentMethod() : "" %>">
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentDate">Payment Date <span style="color: var(--error-red);">*</span></label>
+                            <input type="date" id="paymentDate" name="paymentDate" required <%= isReadOnly ? "readonly" : "" %>
+                                   value="<%= isEditMode2 && payment != null ? payment.getPaymentDate() : "" %>">
+                        </div>
+                    </div>
+
+                    <!-- Status and Remarks -->
+                    <div class="grid grid-2 mb-4">
+                        <div class="form-group">
+                            <label for="paymentStatus">Status</label>
+                            <select id="paymentStatus" name="paymentStatus" <%= isReadOnly ? "disabled" : "" %>>
+                                <option value="PENDING" <%= isEditMode2 && payment != null && "PENDING".equals(payment.getPaymentStatus()) ? "selected" : "" %>>Pending</option>
+                                <option value="PROCESSED" <%= isEditMode2 && payment != null && "PROCESSED".equals(payment.getPaymentStatus()) ? "selected" : "" %>>Processed</option>
+                                <option value="FAILED" <%= isEditMode2 && payment != null && "FAILED".equals(payment.getPaymentStatus()) ? "selected" : "" %>>Failed</option>
+                                <option value="REVERSED" <%= isEditMode2 && payment != null && "REVERSED".equals(payment.getPaymentStatus()) ? "selected" : "" %>>Reversed</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="notes">Notes</label>
-                            <input type="text" id="notes" name="notes" <%= isReadOnly ? "readonly" : "" %>
-                                   value="<%= isEditMode2 && payment != null && payment.getNotes() != null ? payment.getNotes() : "" %>">
+                            <label for="remarks">Remarks</label>
+                            <input type="text" id="remarks" name="remarks" <%= isReadOnly ? "readonly" : "" %>
+                                   value="<%= isEditMode2 && payment != null && payment.getRemarks() != null ? payment.getRemarks() : "" %>">
                         </div>
+                    </div>
+
+                    <!-- Reference Number -->
+                    <div class="form-group mb-4">
+                        <label for="referenceNumber">Reference Number</label>
+                        <input type="text" id="referenceNumber" name="referenceNumber" <%= isReadOnly ? "readonly" : "" %>
+                               value="<%= isEditMode2 && payment != null && payment.getReferenceNumber() != null ? payment.getReferenceNumber() : "" %>">
                     </div>
 
                     <!-- Form Actions -->

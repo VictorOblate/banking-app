@@ -21,6 +21,7 @@ public class Admin {
     private String phone;
     private Date createdDate;
     private Date lastLogin;
+    private Date modifiedDate;
     private boolean isActive;
     
     // ===== CONSTRUCTORS =====
@@ -44,7 +45,8 @@ public class Admin {
      * Full constructor
      */
     public Admin(int adminId, String username, String password, String fullName, 
-                 String email, String phone, Date createdDate, Date lastLogin, boolean isActive) {
+                 String email, String phone, Date createdDate, Date lastLogin, 
+                 Date modifiedDate, boolean isActive) {
         this.adminId = adminId;
         this.username = username;
         this.password = password;
@@ -53,6 +55,7 @@ public class Admin {
         this.phone = phone;
         this.createdDate = createdDate;
         this.lastLogin = lastLogin;
+        this.modifiedDate = modifiedDate;
         this.isActive = isActive;
     }
     
@@ -120,6 +123,14 @@ public class Admin {
     
     public void setLastLogin(Date lastLogin) {
         this.lastLogin = lastLogin;
+    }
+    
+    public Date getModifiedDate() {
+        return modifiedDate;
+    }
+    
+    public void setModifiedDate(Date modifiedDate) {
+        this.modifiedDate = modifiedDate;
     }
     
     public boolean isActive() {

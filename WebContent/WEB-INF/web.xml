@@ -51,6 +51,16 @@
         <url-pattern>/dashboard</url-pattern>
     </servlet-mapping>
 
+    <!-- Admin Management Servlet -->
+    <servlet>
+        <servlet-name>AdminServlet</servlet-name>
+        <servlet-class>com.bankingapp.controller.AdminServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminServlet</servlet-name>
+        <url-pattern>/admin</url-pattern>
+    </servlet-mapping>
+
     <!-- Customer Servlet -->
     <servlet>
         <servlet-name>CustomerServlet</servlet-name>

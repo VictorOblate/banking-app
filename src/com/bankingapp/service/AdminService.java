@@ -2,6 +2,7 @@ package com.bankingapp.service;
 
 import com.bankingapp.dao.AdminDAO;
 import com.bankingapp.model.Admin;
+import java.util.List;
 
 public class AdminService {
     
@@ -72,5 +73,79 @@ public class AdminService {
             return false;
         }
         return adminDAO.usernameExists(username);
+    }
+    
+    /**
+     * Add a new admin user
+     * 
+     * @param admin The Admin object to be added
+     * @return true if admin was added successfully, false otherwise
+     */
+    public boolean addAdmin(Admin admin) {
+        // Validate input
+        if (admin == null || admin.getUsername() == null || admin.getUsername().trim().isEmpty() ||
+            admin.getPassword() == null || admin.getPassword().trim().isEmpty() ||
+            admin.getFullName() == null || admin.getFullName().trim().isEmpty()) {
+            System.out.println("Invalid admin data provided");
+            return false;
+        }
+        
+        // Check if username already exists
+        if (doesUsernameExist(admin.getUsername())) {
+            System.out.println("Username already exists: " + admin.getUsername());
+            return false;
+        }
+        
+        // Add the admin
+        return adminDAO.addAdmin(admin);
+    }
+    
+    /**
+     * Update admin information
+     * 
+     * @param admin The Admin object with updated information
+     * @return true if update was successful, false otherwise
+     */
+    public boolean updateAdmin(Admin admin) {
+        // Validate input
+        if (admin == null || admin.getAdminId() <= 0 || 
+            admin.getPassword() == null || admin.getPassword().trim().isEmpty() ||
+            admin.getFullName() == null || admin.getFullName().trim().isEmpty()) {
+            System.out.println("Invalid admin data provided for update");
+            return false;
+        }
+        
+        return adminDAO.updateAdmin(admin);
+    }
+    
+    /**
+     * Delete/Deactivate admin user
+     * 
+     * @param adminId The ID of the admin to delete
+     * @return true if deletion was successful, false otherwise
+     */
+    public boolean deleteAdmin(int adminId) {
+        if (adminId <= 0) {
+            return false;
+        }
+        return adminDAO.deleteAdmin(adminId);
+    }
+    
+    /**
+     * Get all admin users
+     * 
+     * @return List of all Admin objects
+     */
+    public List<Admin> getAllAdmins() {
+        return adminDAO.getAllAdmins();
+    }
+    
+    /**
+     * Get all active admin users
+     * 
+     * @return List of active Admin objects
+     */
+    public List<Admin> getActiveAdmins() {
+        return adminDAO.getActiveAdmins();
     }
 }
