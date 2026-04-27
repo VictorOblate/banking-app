@@ -123,6 +123,12 @@ public class CustomerServlet extends HttpServlet {
             List<Customer> customers = customerService.getAllCustomers();
             request.setAttribute("customers", customers);
             
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+            
             // Forward to customer list page
             RequestDispatcher dispatcher = request.getRequestDispatcher(Constants.PAGE_CUSTOMER_LIST);
             dispatcher.forward(request, response);
@@ -130,6 +136,13 @@ public class CustomerServlet extends HttpServlet {
         } catch (Exception e) {
             System.err.println("Error listing customers: " + e.getMessage());
             request.setAttribute("error", Constants.ERROR_DATABASE);
+            
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+            
             RequestDispatcher dispatcher = request.getRequestDispatcher(Constants.PAGE_CUSTOMER_LIST);
             dispatcher.forward(request, response);
         }
@@ -145,6 +158,12 @@ public class CustomerServlet extends HttpServlet {
             // Get all packages for dropdown
             List<Package> packages = packageService.getAllPackages();
             request.setAttribute("packages", packages);
+            
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
             
             // Forward to customer form page
             RequestDispatcher dispatcher = request.getRequestDispatcher(Constants.PAGE_CUSTOMER_FORM);
@@ -179,6 +198,12 @@ public class CustomerServlet extends HttpServlet {
             request.setAttribute("customer", customer);
             request.setAttribute("packages", packages);
             request.setAttribute("isEdit", true);
+            
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
             
             // Forward to customer form page
             RequestDispatcher dispatcher = request.getRequestDispatcher(Constants.PAGE_CUSTOMER_FORM);

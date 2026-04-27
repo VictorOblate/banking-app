@@ -106,6 +106,12 @@ public class ShiftServlet extends HttpServlet {
             request.setAttribute("activeShifts", activeShifts);
             request.setAttribute("todayShifts", todayShifts);
 
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+
             // Forward to shift list page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/shift/list.jsp");
             dispatcher.forward(request, response);
@@ -113,6 +119,13 @@ public class ShiftServlet extends HttpServlet {
         } catch (Exception e) {
             System.err.println("Error listing shifts: " + e.getMessage());
             request.setAttribute("error", Constants.ERROR_DATABASE);
+            
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+            
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/shift/list.jsp");
             dispatcher.forward(request, response);
         }
@@ -122,6 +135,12 @@ public class ShiftServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+            
             // Forward to shift form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/shift/form.jsp");
             dispatcher.forward(request, response);
@@ -149,6 +168,12 @@ public class ShiftServlet extends HttpServlet {
             request.setAttribute("shift", shift);
             request.setAttribute("isEdit", true);
 
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+
             // Forward to shift form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/shift/form.jsp");
             dispatcher.forward(request, response);
@@ -175,6 +200,12 @@ public class ShiftServlet extends HttpServlet {
 
             request.setAttribute("shift", shift);
             request.setAttribute("isView", true);
+
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
 
             // Forward to shift form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/shift/form.jsp");

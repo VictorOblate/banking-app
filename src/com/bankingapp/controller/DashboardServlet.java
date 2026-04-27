@@ -73,6 +73,11 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("transactionCount", transactionCount);
             request.setAttribute("totalPayments", totalPayments);
             
+            // Set admin in request for the included header
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+            
             // Admin is logged in, forward to dashboard page
             RequestDispatcher dispatcher = request.getRequestDispatcher(Constants.PAGE_DASHBOARD);
             dispatcher.forward(request, response);

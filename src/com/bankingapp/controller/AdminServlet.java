@@ -117,6 +117,12 @@ public class AdminServlet extends HttpServlet {
             List<Admin> admins = adminService.getAllAdmins();
             request.setAttribute("admins", admins);
             
+            // Set admin in request for the included header
+            Admin currentAdmin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (currentAdmin != null) {
+                request.setAttribute("admin", currentAdmin);
+            }
+            
             // Forward to admin list page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/admin/list.jsp");
             dispatcher.forward(request, response);
@@ -124,6 +130,13 @@ public class AdminServlet extends HttpServlet {
         } catch (Exception e) {
             System.err.println("Error listing admins: " + e.getMessage());
             request.setAttribute("error", "Failed to retrieve admin list");
+            
+            // Set admin in request for the included header
+            Admin currentAdmin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (currentAdmin != null) {
+                request.setAttribute("admin", currentAdmin);
+            }
+            
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/admin/list.jsp");
             dispatcher.forward(request, response);
         }
@@ -136,6 +149,12 @@ public class AdminServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
         
         try {
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+            
             // Forward to admin form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/admin/form.jsp");
             dispatcher.forward(request, response);
@@ -165,6 +184,9 @@ public class AdminServlet extends HttpServlet {
             
             request.setAttribute("admin", admin);
             request.setAttribute("isEdit", true);
+            
+            // Note: admin is already being used for the current session admin, so this attribute
+            // will be the admin being edited and will be available in the JSP
             
             // Forward to admin form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/admin/form.jsp");

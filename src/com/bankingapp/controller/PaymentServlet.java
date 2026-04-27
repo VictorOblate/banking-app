@@ -115,6 +115,12 @@ public class PaymentServlet extends HttpServlet {
             request.setAttribute("totalAmount", totalAmount);
             request.setAttribute("todayAmount", todayAmount);
 
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+
             // Forward to payment list page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/list.jsp");
             dispatcher.forward(request, response);
@@ -122,6 +128,13 @@ public class PaymentServlet extends HttpServlet {
         } catch (Exception e) {
             System.err.println("Error listing payments: " + e.getMessage());
             request.setAttribute("error", Constants.ERROR_DATABASE);
+            
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+            
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/list.jsp");
             dispatcher.forward(request, response);
         }
@@ -131,6 +144,12 @@ public class PaymentServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+            
             // Forward to payment form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/form.jsp");
             dispatcher.forward(request, response);
@@ -158,6 +177,12 @@ public class PaymentServlet extends HttpServlet {
             request.setAttribute("payment", payment);
             request.setAttribute("isEdit", true);
 
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+
             // Forward to payment form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/form.jsp");
             dispatcher.forward(request, response);
@@ -184,6 +209,12 @@ public class PaymentServlet extends HttpServlet {
 
             request.setAttribute("payment", payment);
             request.setAttribute("isView", true);
+
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
 
             // Forward to payment form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/form.jsp");

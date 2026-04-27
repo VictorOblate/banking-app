@@ -105,12 +105,25 @@ public class EmployeeServlet extends HttpServlet {
             List<Employee> employees = employeeService.getAllEmployees();
             request.setAttribute("employees", employees);
             
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+            
             RequestDispatcher dispatcher = request.getRequestDispatcher(Constants.PAGE_EMPLOYEE_LIST);
             dispatcher.forward(request, response);
             
         } catch (Exception e) {
             System.err.println("Error listing employees: " + e.getMessage());
             request.setAttribute("error", Constants.ERROR_DATABASE);
+            
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+            
             RequestDispatcher dispatcher = request.getRequestDispatcher(Constants.PAGE_EMPLOYEE_LIST);
             dispatcher.forward(request, response);
         }
@@ -125,6 +138,12 @@ public class EmployeeServlet extends HttpServlet {
         try {
             List<Shift> shifts = shiftService.getAllShifts();
             request.setAttribute("shifts", shifts);
+            
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
             
             RequestDispatcher dispatcher = request.getRequestDispatcher(Constants.PAGE_EMPLOYEE_FORM);
             dispatcher.forward(request, response);
@@ -156,6 +175,12 @@ public class EmployeeServlet extends HttpServlet {
             request.setAttribute("employee", employee);
             request.setAttribute("shifts", shifts);
             request.setAttribute("isEdit", true);
+            
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
             
             RequestDispatcher dispatcher = request.getRequestDispatcher(Constants.PAGE_EMPLOYEE_FORM);
             dispatcher.forward(request, response);

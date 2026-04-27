@@ -10,6 +10,12 @@
         response.sendRedirect(request.getContextPath() + "/login");
         return;
     }
+    
+    // Declare variables for use throughout the page
+    Employee employee = (Employee) request.getAttribute("employee");
+    Boolean isEditMode = (Boolean) request.getAttribute("isEdit");
+    isEditMode = isEditMode != null ? isEditMode : false;
+    List<Shift> shifts = (List<Shift>) request.getAttribute("shifts");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,8 +23,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%
-        Boolean isEdit = (Boolean) request.getAttribute("isEdit");
-        if (isEdit != null && isEdit) {
+        if (isEditMode) {
     %>Edit Employee<% } else { %>Add Employee<% } %> - Basotho Ownership Bank</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <link rel="icon" href="${pageContext.request.contextPath}/images/favicon.ico" type="image/x-icon">
@@ -31,13 +36,8 @@
     <main class="container">
         <div class="main-content">
             <div class="mb-4">
-                <h1><%
-                    Boolean isEditMode = (Boolean) request.getAttribute("isEdit");
-                    if (isEditMode != null && isEditMode) {
-                %>Edit Employee<% } else { %>Add New Employee<% } %></h1>
-                <p class="text-muted"><%
-                    if (isEditMode != null && isEditMode) {
-                %>Update employee information and employment details.<% } else { %>Create a new employee record with complete profile information.<% } %></p>
+                <h1><%= isEditMode ? "Edit Employee" : "Add New Employee" %></h1>
+                <p class="text-muted"><%= isEditMode ? "Update employee information and employment details." : "Create a new employee record with complete profile information." %></p>
             </div>
 
             <!-- Messages -->
@@ -74,12 +74,6 @@
                     </svg>
                     <%= isEditMode ? "Edit Employee" : "Add New Employee" %>
                 </div>
-
-                <%
-                    Employee employee = (Employee) request.getAttribute("employee");
-                    Boolean isEditMode = (Boolean) request.getAttribute("isEdit");
-                    isEditMode = isEditMode != null ? isEditMode : false;
-                %>
 
                 <form method="POST" action="${pageContext.request.contextPath}/employee?action=save">
                     <% if (isEditMode) { %>
@@ -182,7 +176,6 @@
                             <select id="shiftId" name="shiftId">
                                 <option value="">Select Shift...</option>
                                 <%
-                                    List<Shift> shifts = (List<Shift>) request.getAttribute("shifts");
                                     if (shifts != null) {
                                         for (Shift shift : shifts) {
                                 %>
@@ -248,152 +241,5 @@
 
     <!-- Include Footer -->
     <%@ include file="/jsp/components/footer.jsp" %>
-</body>
-</html>
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
-        }
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        .btn-container {
-            display: flex;
-            gap: 10px;
-            margin-top: 30px;
-        }
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .btn-primary {
-            background-color: #667eea;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #764ba2;
-        }
-        .btn-secondary {
-            background-color: #95a5a6;
-            color: white;
-        }
-        .btn-secondary:hover {
-            background-color: #7f8c8d;
-        }
-    </style>
-</head>
-<body>
-
-<!-- Header -->
-<div class="header">
-    <h1><%
-        Boolean isEdit = (Boolean) request.getAttribute("isEdit");
-        if (isEdit != null && isEdit) {
-    %>Edit Employee<% } else { %>Add New Employee<% } %></h1>
-</div>
-
-<!-- Container -->
-<div class="container">
-    <div class="form-container">
-        <%
-            Employee employee = (Employee) request.getAttribute("employee");
-            Boolean isEditMode = (Boolean) request.getAttribute("isEdit");
-            isEditMode = isEditMode != null ? isEditMode : false;
-        %>
-        
-        <form method="POST" action="${pageContext.request.contextPath}/employee?action=save">
-            <% if (isEditMode) { %>
-            <input type="hidden" name="employeeId" value="<%= employee.getEmployeeId() %>">
-            <% } %>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="firstName">First Name *</label>
-                    <input type="text" id="firstName" name="firstName" required 
-                           value="<%= isEditMode && employee != null ? employee.getFirstName() : "" %>">
-                </div>
-                <div class="form-group">
-                    <label for="lastName">Last Name *</label>
-                    <input type="text" id="lastName" name="lastName" required
-                           value="<%= isEditMode && employee != null ? employee.getLastName() : "" %>">
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email"
-                           value="<%= isEditMode && employee != null ? employee.getEmail() : "" %>">
-                </div>
-                <div class="form-group">
-                    <label for="phone">Phone</label>
-                    <input type="text" id="phone" name="phone"
-                           value="<%= isEditMode && employee != null ? employee.getPhone() : "" %>">
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="designation">Designation</label>
-                    <input type="text" id="designation" name="designation"
-                           value="<%= isEditMode && employee != null ? employee.getDesignation() : "" %>">
-                </div>
-                <div class="form-group">
-                    <label for="department">Department</label>
-                    <input type="text" id="department" name="department"
-                           value="<%= isEditMode && employee != null ? employee.getDepartment() : "" %>">
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="shiftId">Shift</label>
-                    <select id="shiftId" name="shiftId">
-                        <option value="">Select Shift...</option>
-                        <%
-                            List<Shift> shifts = (List<Shift>) request.getAttribute("shifts");
-                            if (shifts != null) {
-                                for (Shift shift : shifts) {
-                        %>
-                        <option value="<%= shift.getShiftId() %>" 
-                                <%= isEditMode && employee != null && employee.getShiftId() == shift.getShiftId() ? "selected" : "" %>>
-                            <%= shift.getShiftName() %>
-                        </option>
-                        <%
-                                }
-                            }
-                        %>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="basicSalary">Basic Salary</label>
-                    <input type="number" id="basicSalary" name="basicSalary" step="0.01"
-                           value="<%= isEditMode && employee != null ? employee.getBasicSalary() : "" %>">
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="hireDate">Hire Date</label>
-                    <input type="date" id="hireDate" name="hireDate"
-                           value="<%= isEditMode && employee != null ? employee.getHireDate() : "" %>">
-                </div>
-            </div>
-            
-            <div class="btn-container">
-                <button type="submit" class="btn btn-primary"><%= isEditMode ? "Update Employee" : "Add Employee" %></button>
-                <a href="${pageContext.request.contextPath}/employee?action=list" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
-    </div>
-</div>
-
 </body>
 </html>

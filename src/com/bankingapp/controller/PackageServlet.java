@@ -113,6 +113,12 @@ public class PackageServlet extends HttpServlet {
             request.setAttribute("activePackages", activePackages);
             request.setAttribute("totalValue", totalValue);
 
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+
             // Forward to package list page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/package/list.jsp");
             dispatcher.forward(request, response);
@@ -120,6 +126,13 @@ public class PackageServlet extends HttpServlet {
         } catch (Exception e) {
             System.err.println("Error listing packages: " + e.getMessage());
             request.setAttribute("error", Constants.ERROR_DATABASE);
+            
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+            
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/package/list.jsp");
             dispatcher.forward(request, response);
         }
@@ -129,6 +142,12 @@ public class PackageServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+            
             // Forward to package form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/package/form.jsp");
             dispatcher.forward(request, response);
@@ -156,6 +175,12 @@ public class PackageServlet extends HttpServlet {
             request.setAttribute("package", pkg);
             request.setAttribute("isEdit", true);
 
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+
             // Forward to package form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/package/form.jsp");
             dispatcher.forward(request, response);
@@ -182,6 +207,12 @@ public class PackageServlet extends HttpServlet {
 
             request.setAttribute("package", pkg);
             request.setAttribute("isView", true);
+
+            // Set admin in request for the included header
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
 
             // Forward to package form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/package/form.jsp");
