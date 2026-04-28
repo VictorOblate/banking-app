@@ -2,16 +2,14 @@
 <%@ page import="com.bankingapp.model.Admin" %>
 <%@ page import="com.bankingapp.util.Constants" %>
 <%
-    // Get admin from request attribute (set by servlet) or session
-    Admin admin = (Admin) request.getAttribute("admin");
-    if (admin == null) {
-        Object sessionAdmin = session.getAttribute(Constants.ADMIN_SESSION);
-        if (sessionAdmin != null && sessionAdmin instanceof Admin) {
-            admin = (Admin) sessionAdmin;
-        } else {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
+    // Get admin from request attribute (set by servlet) or session - do NOT declare as variable
+    Object adminObj = request.getAttribute("admin");
+    if (adminObj == null) {
+        adminObj = session.getAttribute(Constants.ADMIN_SESSION);
+    }
+    if (adminObj == null) {
+        response.sendRedirect(request.getContextPath() + "/login");
+        return;
     }
 %>
 
@@ -44,9 +42,7 @@
         </nav>
         
         <div class="user-menu">
-            <span>Welcome, <%= admin != null ? admin.getUsername() : "Admin" %>!</span>
-            <a href="<%= request.getContextPath() %>/profile">Profile</a>
-            <a href="<%= request.getContextPath() %>/settings">Settings</a>
+            <span>Welcome, <%= ((Admin) adminObj).getUsername() %>!</span>
             <a href="<%= request.getContextPath() %>/logout" class="logout-btn">Logout</a>
         </div>
     </div>
