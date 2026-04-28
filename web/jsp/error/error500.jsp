@@ -13,7 +13,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: linear-gradient(135deg, #57a1f5 0%, #57a1f5 100%);
         }
         .error-container {
             text-align: center;
@@ -54,7 +54,7 @@
             transition: background 0.3s;
         }
         a:hover {
-            background: #f093fb;
+            background: #47b1be;
         }
     </style>
 </head>
@@ -62,7 +62,7 @@
     <div class="error-container">
         <h1>500</h1>
         <p>Internal Server Error</p>
-        <p>An unexpected error has occurred. Our team has been notified.</p>
+        <p>An unexpected error has occurred.</p>
         
         <% if (exception != null) { %>
         <div class="error-message">

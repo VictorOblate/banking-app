@@ -1,19 +1,7 @@
--- ====================================================================
--- Online Banking Application - Database Schema
--- MySQL 5.5+
--- ====================================================================
--- This SQL script creates the complete database structure for the 
--- Online Banking Application. Execute this script to set up the database.
--- ====================================================================
-
 -- Create the database
 CREATE DATABASE IF NOT EXISTS banking_db;
 USE banking_db;
 
--- ====================================================================
--- DROP EXISTING TABLES (in reverse dependency order) sdkjfhdkjhsfhw
--- ====================================================================
--- Disable foreign key checks to avoid constraint errors during deletion
 SET FOREIGN_KEY_CHECKS=0;
 
 DROP TABLE IF EXISTS activity_log;
@@ -25,13 +13,8 @@ DROP TABLE IF EXISTS shifts;
 DROP TABLE IF EXISTS packages;
 DROP TABLE IF EXISTS admin;
 
--- Re-enable foreign key checks
 SET FOREIGN_KEY_CHECKS=1;
 
--- ====================================================================
--- TABLE: admin
--- Purpose: Store admin user credentials and information
--- ====================================================================
 CREATE TABLE IF NOT EXISTS admin (
     admin_id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) NOT NULL UNIQUE,
@@ -47,10 +30,6 @@ CREATE TABLE IF NOT EXISTS admin (
     INDEX idx_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- ====================================================================
--- TABLE: packages
--- Purpose: Store banking service packages offered to customers
--- ====================================================================
 CREATE TABLE IF NOT EXISTS packages (
     package_id INT PRIMARY KEY AUTO_INCREMENT,
     package_name VARCHAR(100) NOT NULL UNIQUE,
@@ -66,10 +45,6 @@ CREATE TABLE IF NOT EXISTS packages (
     INDEX idx_package_type (package_type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- ====================================================================
--- TABLE: shifts
--- Purpose: Store work shifts for employees
--- ====================================================================
 CREATE TABLE IF NOT EXISTS shifts (
     shift_id INT PRIMARY KEY AUTO_INCREMENT,
     shift_name VARCHAR(100) NOT NULL UNIQUE,
@@ -84,10 +59,6 @@ CREATE TABLE IF NOT EXISTS shifts (
     INDEX idx_shift_name (shift_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- ====================================================================
--- TABLE: customers
--- Purpose: Store customer information
--- ====================================================================
 CREATE TABLE IF NOT EXISTS customers (
     customer_id INT PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(100) NOT NULL,
@@ -114,10 +85,6 @@ CREATE TABLE IF NOT EXISTS customers (
     INDEX idx_account_status (account_status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- ====================================================================
--- TABLE: employees
--- Purpose: Store employee information
--- ====================================================================
 CREATE TABLE IF NOT EXISTS employees (
     employee_id INT PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(100) NOT NULL,
@@ -148,10 +115,6 @@ CREATE TABLE IF NOT EXISTS employees (
     INDEX idx_employment_status (employment_status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- ====================================================================
--- TABLE: transactions
--- Purpose: Store all banking transactions
--- ====================================================================
 CREATE TABLE IF NOT EXISTS transactions (
     transaction_id INT PRIMARY KEY AUTO_INCREMENT,
     customer_id INT NOT NULL,
@@ -174,10 +137,6 @@ CREATE TABLE IF NOT EXISTS transactions (
     INDEX idx_reference_number (reference_number)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- ====================================================================
--- TABLE: payments
--- Purpose: Store payment records (salary, recurring, etc.)
--- ====================================================================
 CREATE TABLE IF NOT EXISTS payments (
     payment_id INT PRIMARY KEY AUTO_INCREMENT,
     employee_id INT,
@@ -202,10 +161,6 @@ CREATE TABLE IF NOT EXISTS payments (
     INDEX idx_customer_id (customer_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- ====================================================================
--- TABLE: activity_log
--- Purpose: Log all important system activities for audit trail
--- ====================================================================
 CREATE TABLE IF NOT EXISTS activity_log (
     log_id INT PRIMARY KEY AUTO_INCREMENT,
     admin_id INT,
@@ -223,11 +178,6 @@ CREATE TABLE IF NOT EXISTS activity_log (
     INDEX idx_action (action)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- ====================================================================
--- SAMPLE DATA
--- ====================================================================
-
--- Insert sample admin user (password: admin123)
 INSERT INTO admin (username, email, password, full_name, phone, is_active) VALUES
 ('admin', 'admin@bankingapp.com', 'admin123', 'Administrator', '1234567890', TRUE);
 
@@ -258,6 +208,3 @@ INSERT INTO employees (first_name, last_name, email, phone, date_of_birth, gende
 ('Anjali', 'Verma', 'anjali.verma@bankingapp.com', '9999999999', '1994-06-20', 'FEMALE', '200 Finance Ave', 'Delhi', 'DL', '110001', 'India', 'EMP002', 'Senior Executive', 'Customer Service', 1, 40000.00, '2017-03-15', 'ACTIVE', 'BANK002'),
 ('Rohan', 'Mishra', 'rohan.mishra@bankingapp.com', '8765432107', '2000-11-05', 'MALE', '300 Tech Road', 'Bangalore', 'KA', '560001', 'India', 'EMP003', 'Junior Executive', 'IT Department', 2, 25000.00, '2020-01-20', 'ACTIVE', 'BANK003');
 
--- ====================================================================
--- End of Schema
--- ====================================================================

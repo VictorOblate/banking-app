@@ -130,16 +130,7 @@
                 
                 <button type="submit" class="btn-login">Sign In</button>
             </form>
-            
-            <!-- Demo Credentials -->
-            <div class="demo-credentials">
-                <strong>Demo Credentials:</strong>
-                <div style="margin-top: 0.5rem;">
-                    <div>Username: <strong>admin</strong></div>
-                    <div>Password: <strong>admin123</strong></div>
-                </div>
-            </div>
-            
+
             <!-- Footer -->
             <div style="text-align: center; margin-top: 1.5rem; color: var(--medium-gray); font-size: 0.85rem;">
                 <p style="margin: 0;">
