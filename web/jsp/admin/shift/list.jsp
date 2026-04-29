@@ -127,7 +127,6 @@
                                 <th>Start Time</th>
                                 <th>End Time</th>
                                 <th>Description</th>
-                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -141,11 +140,7 @@
                                 <td><%= shift.getStartTime() != null ? shift.getStartTime() : "N/A" %></td>
                                 <td><%= shift.getEndTime() != null ? shift.getEndTime() : "N/A" %></td>
                                 <td><%= shift.getDescription() != null ? shift.getDescription() : "N/A" %></td>
-                                <td>
-                                    <span class="status status-<%= shift.getStatus() != null ? shift.getStatus().toLowerCase() : "inactive" %>">
-                                        <%= shift.getStatus() != null ? shift.getStatus() : "Inactive" %>
-                                    </span>
-                                </td>
+                                
                                 <td>
                                     <div class="action-buttons">
                                         <a href="${pageContext.request.contextPath}/shift?action=view&id=<%= shift.getShiftId() %>" class="btn btn-sm btn-info">
