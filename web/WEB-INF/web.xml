@@ -101,6 +101,16 @@
         <url-pattern>/payment</url-pattern>
     </servlet-mapping>
 
+    <!-- Overtime Servlet -->
+    <servlet>
+        <servlet-name>OvertimeServlet</servlet-name>
+        <servlet-class>com.bankingapp.controller.OvertimeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>OvertimeServlet</servlet-name>
+        <url-pattern>/overtime</url-pattern>
+    </servlet-mapping>
+
     <!-- Transaction Servlet -->
     <servlet>
         <servlet-name>TransactionServlet</servlet-name>

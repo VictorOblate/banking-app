@@ -11,12 +11,14 @@ import javax.servlet.http.HttpSession;
 
 import com.bankingapp.model.Admin;
 import com.bankingapp.model.Payment;
+import com.bankingapp.model.BulkPaymentBatch;
 import com.bankingapp.service.TransactionPaymentService;
+import com.bankingapp.service.BulkPaymentService;
 import com.bankingapp.util.Constants;
 
 /**
  * Payment Servlet
- * Payment management operations.
+ * Payment management operations including bulk payments.
  *
  * @author Banking App Development Team
  * @version 1.0
@@ -24,11 +26,13 @@ import com.bankingapp.util.Constants;
 public class PaymentServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private TransactionPaymentService paymentService;
+    private BulkPaymentService bulkPaymentService;
 
     @Override
     public void init() throws ServletException {
         super.init();
         this.paymentService = new TransactionPaymentService();
+        this.bulkPaymentService = new BulkPaymentService();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -59,6 +63,18 @@ public class PaymentServlet extends HttpServlet {
                 case Constants.ACTION_VIEW:
                     showViewForm(request, response);
                     break;
+                case "bulk_salary":
+                    showBulkSalaryForm(request, response);
+                    break;
+                case "bulk_overtime":
+                    showBulkOvertimeForm(request, response);
+                    break;
+                case "batch_list":
+                    listBatches(request, response);
+                    break;
+                case "batch_view":
+                    viewBatch(request, response);
+                    break;
                 default:
                     listPayments(request, response);
             }
@@ -85,6 +101,16 @@ public class PaymentServlet extends HttpServlet {
                 savePayment(request, response);
             } else if (Constants.ACTION_DELETE.equals(action)) {
                 deletePayment(request, response);
+            } else if ("process_bulk_salary".equals(action)) {
+                processBulkSalary(request, response);
+            } else if ("process_bulk_overtime".equals(action)) {
+                processBulkOvertime(request, response);
+            } else if ("approve_batch".equals(action)) {
+                approveBatch(request, response);
+            } else if ("process_batch".equals(action)) {
+                processPaymentBatch(request, response);
+            } else if ("reject_batch".equals(action)) {
+                rejectBatch(request, response);
             } else {
                 listPayments(request, response);
             }
@@ -302,6 +328,210 @@ public class PaymentServlet extends HttpServlet {
 
         } catch (Exception e) {
             System.err.println("Error deleting payment: " + e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void showBulkSalaryForm(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, java.io.IOException {
+        try {
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+            
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/bulk_salary.jsp");
+            dispatcher.forward(request, response);
+        } catch (Exception e) {
+            System.err.println("Error showing bulk salary form: " + e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void showBulkOvertimeForm(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, java.io.IOException {
+        try {
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+            
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/bulk_overtime.jsp");
+            dispatcher.forward(request, response);
+        } catch (Exception e) {
+            System.err.println("Error showing bulk overtime form: " + e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void processBulkSalary(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, java.io.IOException {
+        try {
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            String batchName = request.getParameter("batchName");
+            String paymentDate = request.getParameter("paymentDate");
+            
+            // Create batch
+            int batchId = bulkPaymentService.createBulkSalaryBatch(batchName, paymentDate, admin.getAdminId());
+            
+            if (batchId > 0) {
+                // Process payments
+                int processed = bulkPaymentService.processBulkSalaryPayments(batchId, paymentDate);
+                request.setAttribute("success", "Bulk salary batch created with " + processed + " payments");
+                request.setAttribute("batchId", batchId);
+            } else {
+                request.setAttribute("error", "Failed to create salary batch");
+            }
+            
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/bulk_salary_result.jsp");
+            dispatcher.forward(request, response);
+        } catch (Exception e) {
+            System.err.println("Error processing bulk salary: " + e.getMessage());
+            e.printStackTrace();
+            request.setAttribute("error", "Error processing bulk salary: " + e.getMessage());
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/bulk_salary.jsp");
+            dispatcher.forward(request, response);
+        }
+    }
+
+    private void processBulkOvertime(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, java.io.IOException {
+        try {
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            String batchName = request.getParameter("batchName");
+            String paymentDate = request.getParameter("paymentDate");
+            
+            // Create batch
+            int batchId = bulkPaymentService.createBulkOvertimeBatch(batchName, paymentDate, admin.getAdminId());
+            
+            if (batchId > 0) {
+                // Process payments
+                int processed = bulkPaymentService.processBulkOvertimePayments(batchId, paymentDate);
+                request.setAttribute("success", "Bulk overtime batch created with " + processed + " payments");
+                request.setAttribute("batchId", batchId);
+            } else {
+                request.setAttribute("error", "Failed to create overtime batch");
+            }
+            
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/bulk_overtime_result.jsp");
+            dispatcher.forward(request, response);
+        } catch (Exception e) {
+            System.err.println("Error processing bulk overtime: " + e.getMessage());
+            e.printStackTrace();
+            request.setAttribute("error", "Error processing bulk overtime: " + e.getMessage());
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/bulk_overtime.jsp");
+            dispatcher.forward(request, response);
+        }
+    }
+
+    private void listBatches(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, java.io.IOException {
+        try {
+            String batchType = request.getParameter("type");
+            String status = request.getParameter("status");
+            
+            List<BulkPaymentBatch> batches;
+            if (batchType != null && !batchType.isEmpty()) {
+                batches = bulkPaymentService.getBatchesByType(batchType);
+            } else if (status != null && !status.isEmpty()) {
+                batches = bulkPaymentService.getBatchesByStatus(status);
+            } else {
+                batches = bulkPaymentService.getAllBatches();
+            }
+            
+            request.setAttribute("batches", batches);
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+            
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/batch_list.jsp");
+            dispatcher.forward(request, response);
+        } catch (Exception e) {
+            System.err.println("Error listing batches: " + e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void viewBatch(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, java.io.IOException {
+        try {
+            int batchId = Integer.parseInt(request.getParameter("id"));
+            BulkPaymentBatch batch = bulkPaymentService.getBatchById(batchId);
+            
+            if (batch == null) {
+                request.setAttribute("error", "Batch not found");
+                listBatches(request, response);
+                return;
+            }
+            
+            request.setAttribute("batch", batch);
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+            
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/batch_view.jsp");
+            dispatcher.forward(request, response);
+        } catch (Exception e) {
+            System.err.println("Error viewing batch: " + e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void approveBatch(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, java.io.IOException {
+        try {
+            int batchId = Integer.parseInt(request.getParameter("batchId"));
+            boolean success = bulkPaymentService.approveBatch(batchId);
+            
+            if (success) {
+                request.setAttribute("success", "Batch approved successfully");
+            } else {
+                request.setAttribute("error", "Failed to approve batch");
+            }
+            
+            viewBatch(request, response);
+        } catch (Exception e) {
+            System.err.println("Error approving batch: " + e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void processPaymentBatch(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, java.io.IOException {
+        try {
+            int batchId = Integer.parseInt(request.getParameter("batchId"));
+            boolean success = bulkPaymentService.processBatch(batchId);
+            
+            if (success) {
+                request.setAttribute("success", "Batch processed successfully");
+            } else {
+                request.setAttribute("error", "Failed to process batch");
+            }
+            
+            viewBatch(request, response);
+        } catch (Exception e) {
+            System.err.println("Error processing batch: " + e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void rejectBatch(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, java.io.IOException {
+        try {
+            int batchId = Integer.parseInt(request.getParameter("batchId"));
+            boolean success = bulkPaymentService.rejectBatch(batchId);
+            
+            if (success) {
+                request.setAttribute("success", "Batch rejected successfully");
+            } else {
+                request.setAttribute("error", "Failed to reject batch");
+            }
+            
+            viewBatch(request, response);
+        } catch (Exception e) {
+            System.err.println("Error rejecting batch: " + e.getMessage());
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }

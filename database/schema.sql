@@ -161,6 +161,46 @@ CREATE TABLE IF NOT EXISTS payments (
     INDEX idx_customer_id (customer_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS overtime (
+    overtime_id INT PRIMARY KEY AUTO_INCREMENT,
+    employee_id INT NOT NULL,
+    overtime_date DATE NOT NULL,
+    hours_worked DECIMAL(5, 2) NOT NULL,
+    hourly_rate DECIMAL(10, 2),
+    overtime_amount DECIMAL(15, 2),
+    overtime_type VARCHAR(50),
+    remarks TEXT,
+    status ENUM('PENDING', 'APPROVED', 'REJECTED', 'PROCESSED') DEFAULT 'PENDING',
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    approved_date DATETIME,
+    process_date DATETIME,
+    
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE,
+    INDEX idx_employee_id (employee_id),
+    INDEX idx_overtime_date (overtime_date),
+    INDEX idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS bulk_payment_batch (
+    batch_id INT PRIMARY KEY AUTO_INCREMENT,
+    batch_type VARCHAR(50) NOT NULL,
+    batch_name VARCHAR(100),
+    description TEXT,
+    total_amount DECIMAL(15, 2),
+    total_records INT,
+    payment_date DATE,
+    batch_status ENUM('DRAFT', 'SUBMITTED', 'APPROVED', 'PROCESSED', 'REJECTED') DEFAULT 'DRAFT',
+    created_by INT,
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    processed_date DATETIME,
+    remarks TEXT,
+    
+    FOREIGN KEY (created_by) REFERENCES admin(admin_id),
+    INDEX idx_batch_type (batch_type),
+    INDEX idx_batch_status (batch_status),
+    INDEX idx_payment_date (payment_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS activity_log (
     log_id INT PRIMARY KEY AUTO_INCREMENT,
     admin_id INT,
