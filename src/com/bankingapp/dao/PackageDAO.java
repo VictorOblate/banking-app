@@ -99,6 +99,46 @@ public class PackageDAO {
         
         return packages;
     }
+
+    /**
+     * Get all packages (active and inactive) for management
+     * 
+     * @return List of all packages
+     */
+    public List<Package> getAllPackages() {
+        String sql = "SELECT package_id, package_name, package_type, description, benefits, " +
+                     "monthly_fee, annual_fee, created_date, modified_date, is_active " +
+                     "FROM packages ORDER BY package_id DESC";
+        
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        List<Package> packages = new ArrayList<>();
+        
+        try {
+            connection = DBConnection.getConnection();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(sql);
+            
+            while (resultSet.next()) {
+                Package pkg = mapResultSetToPackage(resultSet);
+                packages.add(pkg);
+            }
+            
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error retrieving packages: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                if (connection != null) DBConnection.closeConnection(connection);
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+        
+        return packages;
+    }
     
     /**
      * Get package by ID

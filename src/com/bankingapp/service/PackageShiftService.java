@@ -36,6 +36,15 @@ public class PackageShiftService {
     public List<Package> getAllPackages() {
         return packageDAO.getAllActivePackages();
     }
+
+    /**
+     * Get all packages including inactive for admin management
+     * 
+     * @return List of all packages
+     */
+    public List<Package> getAllPackagesForManagement() {
+        return packageDAO.getAllPackages();
+    }
     
     /**
      * Get package by ID

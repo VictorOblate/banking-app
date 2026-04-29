@@ -61,7 +61,23 @@
             </div>
 
             <!-- Report Categories -->
-            <div class="report-grid">
+            <div class="card">
+                <div class="card-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                    </svg>
+                    Generate Report
+                </div>
+                <div style="padding: 40px; text-align: center;">
+                    <p style="font-size: 16px; margin-bottom: 20px;">Create a custom report with your preferred data, date range, and filters.</p>
+                    <a href="${pageContext.request.contextPath}/report?action=form" class="btn btn-primary" style="padding: 12px 30px; font-size: 16px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px;">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                        </svg>
+                        Generate Custom Report
+                    </a>
+                </div>
+            </div>
                 <!-- Customer Reports -->
                 <div class="report-card">
                     <div class="report-icon">

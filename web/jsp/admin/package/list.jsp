@@ -160,6 +160,15 @@
                                             </svg>
                                             Edit
                                         </a>
+                                        <form method="POST" action="${pageContext.request.contextPath}/package?action=delete" style="display: inline;">
+                                            <input type="hidden" name="id" value="<%= pkg.getPackageId() %>">
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this package?');">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-9l-1 1H5v2h14V4z"/>
+                                                </svg>
+                                                Delete
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>

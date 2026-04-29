@@ -100,18 +100,18 @@ public class PackageServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
-            // Get all packages
-            List<Package> packages = packageService.getAllPackages();
+            // Get all packages (active and inactive) for admin management
+            List<Package> packages = packageService.getAllPackagesForManagement();
             request.setAttribute("packages", packages);
 
             // Get statistics
-            int totalPackages = packageService.getPackageCount();
-            int activePackages = packageService.getActivePackagesCount();
-            double totalValue = packageService.getTotalPackageValue();
+            int totalPackages = packages.size();
+            int activePackages = (int) packages.stream().filter(p -> p.isActive()).count();
+            int inactivePackages = totalPackages - activePackages;
 
             request.setAttribute("totalPackages", totalPackages);
             request.setAttribute("activePackages", activePackages);
-            request.setAttribute("totalValue", totalValue);
+            request.setAttribute("inactivePackages", inactivePackages);
 
             // Set admin in request for the included header
             Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
@@ -236,7 +236,7 @@ public class PackageServlet extends HttpServlet {
             String benefits = request.getParameter("benefits");
             String monthlyFeeStr = request.getParameter("monthlyFee");
             String annualFeeStr = request.getParameter("annualFee");
-            String status = request.getParameter("status");
+            String isActiveStr = request.getParameter("isActive");
 
             // Create package object
             Package pkg = new Package();
@@ -244,9 +244,9 @@ public class PackageServlet extends HttpServlet {
             pkg.setPackageType(packageType);
             pkg.setDescription(description);
             pkg.setBenefits(benefits);
-            pkg.setMonthlyFee(Double.parseDouble(monthlyFeeStr));
-            pkg.setAnnualFee(Double.parseDouble(annualFeeStr));
-            pkg.setActive("ACTIVE".equals(status));
+            pkg.setMonthlyFee(monthlyFeeStr != null && !monthlyFeeStr.isEmpty() ? Double.parseDouble(monthlyFeeStr) : 0.0);
+            pkg.setAnnualFee(annualFeeStr != null && !annualFeeStr.isEmpty() ? Double.parseDouble(annualFeeStr) : 0.0);
+            pkg.setActive("true".equals(isActiveStr));
 
             boolean success = false;
             String message = "";

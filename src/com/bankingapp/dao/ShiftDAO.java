@@ -310,12 +310,12 @@ public class ShiftDAO {
     }
     
     /**
-     * Get count of shifts scheduled for today
+     * Get count of active shifts
      * 
-     * @return Number of shifts scheduled for today
+     * @return Number of active shifts
      */
     public int getTodayShiftsCount() {
-        String sql = "SELECT COUNT(*) as count FROM shifts WHERE DATE(shift_date) = CURDATE() AND is_active = TRUE";
+        String sql = "SELECT COUNT(*) as count FROM shifts WHERE is_active = TRUE";
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -330,7 +330,7 @@ public class ShiftDAO {
                 return resultSet.getInt("count");
             }
         } catch (SQLException | ClassNotFoundException e) {
-            System.err.println("Error getting today shifts count: " + e.getMessage());
+            System.err.println("Error getting active shifts count: " + e.getMessage());
         } finally {
             try {
                 if (resultSet != null) resultSet.close();
