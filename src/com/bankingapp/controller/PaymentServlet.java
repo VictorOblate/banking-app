@@ -69,6 +69,9 @@ public class PaymentServlet extends HttpServlet {
                 case "bulk_overtime":
                     showBulkOvertimeForm(request, response);
                     break;
+                case "employee_payment":
+                    showEmployeePaymentForm(request, response);
+                    break;
                 case "batch_list":
                     listBatches(request, response);
                     break;
@@ -111,6 +114,8 @@ public class PaymentServlet extends HttpServlet {
                 processPaymentBatch(request, response);
             } else if ("reject_batch".equals(action)) {
                 rejectBatch(request, response);
+            } else if ("employee_payment".equals(action)) {
+                saveEmployeePayment(request, response);
             } else {
                 listPayments(request, response);
             }
@@ -361,6 +366,61 @@ public class PaymentServlet extends HttpServlet {
         } catch (Exception e) {
             System.err.println("Error showing bulk overtime form: " + e.getMessage());
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void showEmployeePaymentForm(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, java.io.IOException {
+        try {
+            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
+            if (admin != null) {
+                request.setAttribute("admin", admin);
+            }
+            
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/employee_payment.jsp");
+            dispatcher.forward(request, response);
+        } catch (Exception e) {
+            System.err.println("Error showing employee payment form: " + e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void saveEmployeePayment(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, java.io.IOException {
+        try {
+            int employeeId = Integer.parseInt(request.getParameter("employeeId"));
+            String paymentType = request.getParameter("paymentType");
+            String description = request.getParameter("description");
+            double amount = Double.parseDouble(request.getParameter("amount"));
+            String paymentDate = request.getParameter("paymentDate");
+            String paymentMethod = request.getParameter("paymentMethod");
+            String remarks = request.getParameter("remarks");
+
+            Payment payment = new Payment();
+            payment.setEmployeeId(employeeId);
+            payment.setPaymentType(paymentType);
+            payment.setPaymentDescription(description);
+            payment.setAmount(amount);
+            payment.setPaymentDate(paymentDate);
+            payment.setPaymentMethod(paymentMethod);
+            payment.setRemarks(remarks);
+            payment.setPaymentStatus("PROCESSED");
+
+            boolean success = paymentService.processPayment(payment);
+
+            if (success) {
+                request.setAttribute("success", "Employee payment processed successfully");
+            } else {
+                request.setAttribute("error", "Failed to process employee payment");
+            }
+
+            response.sendRedirect(request.getContextPath() + "/payment?action=list");
+
+        } catch (Exception e) {
+            System.err.println("Error saving employee payment: " + e.getMessage());
+            e.printStackTrace();
+            request.setAttribute("error", "Error processing employee payment: " + e.getMessage());
+            showEmployeePaymentForm(request, response);
         }
     }
 

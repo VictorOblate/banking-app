@@ -223,20 +223,21 @@ public class ShiftServlet extends HttpServlet {
         try {
             // Get shift data from request
             String shiftIdStr = request.getParameter("shiftId");
-            String employeeIdStr = request.getParameter("employeeId");
             String shiftName = request.getParameter("shiftName");
             String startTime = request.getParameter("startTime");
             String endTime = request.getParameter("endTime");
-            String status = request.getParameter("status");
-            String notes = request.getParameter("notes");
+            String shiftType = request.getParameter("shiftType");
+            String description = request.getParameter("description");
+            String isActiveStr = request.getParameter("isActive");
 
             // Create shift object
             Shift shift = new Shift();
             shift.setShiftName(shiftName);
             shift.setStartTime(startTime);
             shift.setEndTime(endTime);
-            shift.setDescription(notes);
-            shift.setActive("ACTIVE".equals(status));
+            shift.setShiftType(shiftType);
+            shift.setDescription(description);
+            shift.setActive("true".equals(isActiveStr) || "on".equals(isActiveStr));
 
             boolean success = false;
             String message = "";
