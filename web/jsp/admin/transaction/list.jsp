@@ -113,7 +113,7 @@
                         </svg>
                     </div>
                     <div class="stat-content">
-                        <div class="stat-value">LSL <%= currencyFormat.format(totalAmount) %></div>
+                        <div class="stat-value">LSL <%= totalAmount %></div>
                         <div class="stat-label">Total Amount</div>
                     </div>
                 </div>
@@ -123,10 +123,7 @@
                             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                         </svg>
                     </div>
-                    <div class="stat-content">
-                        <div class="stat-value">LSL <%= currencyFormat.format(todayAmount) %></div>
-                        <div class="stat-label">Today's Amount</div>
-                    </div>
+                    
                 </div>
             </div>
 
@@ -170,7 +167,7 @@
                                         <%= transaction.getTransactionType() != null ? transaction.getTransactionType() : "N/A" %>
                                     </span>
                                 </td>
-                                <td class="amount">LSL <%= currencyFormat.format(transaction.getAmount()) %></td>
+                                <td class="amount">LSL <%= transaction.getAmount() %></td>
                                 <td><%= transaction.getTransactionDate() != null ? dateFormat.format(transaction.getTransactionDate()) : "N/A" %></td>
                                 <td><%= transaction.getDescription() != null ? transaction.getDescription() : "N/A" %></td>
                                 <td>

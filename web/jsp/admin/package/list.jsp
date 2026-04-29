@@ -140,7 +140,7 @@
                                 <td><%= pkg.getPackageId() %></td>
                                 <td><%= pkg.getPackageName() != null ? pkg.getPackageName() : "N/A" %></td>
                                 <td><%= pkg.getDescription() != null ? pkg.getDescription() : "N/A" %></td>
-                                <td class="amount">LSL <%= currencyFormat.format(pkg.getMonthlyFee()) %></td>
+                                <td class="amount">LSL <%= pkg.getMonthlyFee() %></td>
                                 <td>
                                     <span class="badge <%= pkg.isActive() ? "badge-success" : "badge-inactive" %>">
                                         <%= pkg.isActive() ? "Active" : "Inactive" %>

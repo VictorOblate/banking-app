@@ -30,6 +30,12 @@
             <a href="<%= request.getContextPath() %>/employee" class="<%= request.getRequestURI().contains("employee") ? "active" : "" %>">
                 Employees
             </a>
+            <a href="<%= request.getContextPath() %>/overtime" class="<%= request.getRequestURI().contains("overtime") ? "active" : "" %>">
+                Overtime
+            </a>
+            <a href="<%= request.getContextPath() %>/shift" class="<%= request.getRequestURI().contains("shift") ? "active" : "" %>">
+                Shifts
+            </a>
             <a href="<%= request.getContextPath() %>/package" class="<%= request.getRequestURI().contains("package") ? "active" : "" %>">
                 Packages
             </a>
