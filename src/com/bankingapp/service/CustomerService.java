@@ -148,10 +148,7 @@ public class CustomerService {
             return false;
         }
         
-        if (!ValidationUtil.isValidPhone(customer.getPhone())) {
-            System.out.println("Invalid phone number");
-            return false;
-        }
+        
         
         return true;
     }
