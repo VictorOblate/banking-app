@@ -324,7 +324,7 @@ public class PackageDAO {
      * @return Number of active packages
      */
     public int getActivePackagesCount() {
-        String sql = "SELECT COUNT(*) as count FROM packages WHERE is_active = TRUE";
+        String sql = "SELECT COUNT(*) as count FROM packages WHERE is_active = FALSE";
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -359,7 +359,7 @@ public class PackageDAO {
      * @return Total value from annual fees
      */
     public double getTotalPackageValue() {
-        String sql = "SELECT SUM(annual_fee) as total FROM packages WHERE is_active = FALSE";
+        String sql = "SELECT SUM(annual_fee) as total FROM packages WHERE is_active = TRUE";
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;
