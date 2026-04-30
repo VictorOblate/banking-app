@@ -2,6 +2,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.bankingapp.model.Payment" %>
 <%@ page import="com.bankingapp.util.Constants" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.text.DecimalFormat" %>
 <%
     // Check if user is logged in

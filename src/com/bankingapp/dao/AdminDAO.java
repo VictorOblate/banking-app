@@ -295,7 +295,7 @@ public class AdminDAO {
      * @return true if deletion was successful, false otherwise
      */
     public boolean deleteAdmin(int adminId) {
-        String sql = "UPDATE admin SET is_active = FALSE, modified_date = NOW() WHERE admin_id = ?";
+        String sql = "UPDATE admin SET is_active = FALSE WHERE admin_id = ?";
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;

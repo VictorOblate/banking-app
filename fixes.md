@@ -129,12 +129,20 @@ When customer.getPackageId() is 0 (no package selected), the INSERT tries to ins
 In addCustomer(), find:
 
 java
-preparedStatement.setInt(12, customer.getPackageId());
+if (customer.getPackageId() > 0) {
+    preparedStatement.setInt(12, customer.getPackageId());
+} else {
+    preparedStatement.setNull(12, java.sql.Types.INTEGER);
+}
 Replace with:
 
 java
 if (customer.getPackageId() > 0) {
+    if (customer.getPackageId() > 0) {
     preparedStatement.setInt(12, customer.getPackageId());
+} else {
+    preparedStatement.setNull(12, java.sql.Types.INTEGER);
+}
 } else {
     preparedStatement.setNull(12, java.sql.Types.INTEGER);
 }
@@ -146,12 +154,20 @@ When employee.getShiftId() is 0 (no shift selected), the INSERT tries to insert 
 In addEmployee(), find:
 
 java
-preparedStatement.setInt(15, employee.getShiftId());
+if (employee.getShiftId() > 0) {
+    preparedStatement.setInt(15, employee.getShiftId());
+} else {
+    preparedStatement.setNull(15, java.sql.Types.INTEGER);
+}
 Replace with:
 
 java
 if (employee.getShiftId() > 0) {
+    if (employee.getShiftId() > 0) {
     preparedStatement.setInt(15, employee.getShiftId());
+} else {
+    preparedStatement.setNull(15, java.sql.Types.INTEGER);
+}
 } else {
     preparedStatement.setNull(15, java.sql.Types.INTEGER);
 }
@@ -441,7 +457,7 @@ Fix 28 — src/com/bankingapp/controller/LogoutServlet.java — redirects direct
 Change:
 
 java
-response.sendRedirect(request.getContextPath() + "/jsp/login.jsp");
+response.sendRedirect(request.getContextPath() + "/login");
 To:
 
 java

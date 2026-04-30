@@ -36,23 +36,12 @@ public class EmployeeService {
      * @return true if employee was added successfully, false otherwise
      */
     public boolean addEmployee(Employee employee) {
-        // Validate employee data
-        if (!isValidEmployee(employee)) {
-            System.out.println("Employee validation failed");
-            return false;
-        }
-        
-        // Generate employee code if not provided
         if (employee.getEmployeeCode() == null || employee.getEmployeeCode().trim().isEmpty()) {
             employee.setEmployeeCode(generateEmployeeCode());
         }
-        
-        // Set default employment status if not provided
         if (employee.getEmploymentStatus() == null || employee.getEmploymentStatus().trim().isEmpty()) {
             employee.setEmploymentStatus("ACTIVE");
         }
-        
-        // Add employee to database
         return employeeDAO.addEmployee(employee);
     }
     

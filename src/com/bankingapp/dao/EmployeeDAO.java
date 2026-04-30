@@ -52,7 +52,11 @@ public class EmployeeDAO {
             preparedStatement.setString(12, employee.getEmployeeCode());
             preparedStatement.setString(13, employee.getDesignation());
             preparedStatement.setString(14, employee.getDepartment());
-            preparedStatement.setInt(15, employee.getShiftId());
+            if (employee.getShiftId() > 0) {
+    preparedStatement.setInt(15, employee.getShiftId());
+} else {
+    preparedStatement.setNull(15, java.sql.Types.INTEGER);
+}
             preparedStatement.setDouble(16, employee.getBasicSalary());
             preparedStatement.setString(17, employee.getHireDate());
             preparedStatement.setString(18, employee.getEmploymentStatus() != null ? employee.getEmploymentStatus() : "ACTIVE");
@@ -198,7 +202,11 @@ public class EmployeeDAO {
             preparedStatement.setString(11, employee.getCountry());
             preparedStatement.setString(12, employee.getDesignation());
             preparedStatement.setString(13, employee.getDepartment());
-            preparedStatement.setInt(14, employee.getShiftId());
+            preparedStatement.if (employee.getShiftId() > 0) {
+    preparedStatement.setInt(14, employee.getShiftId());
+} else {
+    preparedStatement.setNull(14, java.sql.Types.INTEGER);
+};
             preparedStatement.setDouble(15, employee.getBasicSalary());
             preparedStatement.setString(16, employee.getEmploymentStatus());
             preparedStatement.setString(17, employee.getBankAccountNumber());

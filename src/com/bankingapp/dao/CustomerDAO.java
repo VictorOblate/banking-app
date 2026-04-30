@@ -47,7 +47,11 @@ public class CustomerDAO {
             preparedStatement.setString(9, customer.getState());
             preparedStatement.setString(10, customer.getPostalCode());
             preparedStatement.setString(11, customer.getCountry());
-            preparedStatement.setInt(12, customer.getPackageId());
+            if (customer.getPackageId() > 0) {
+    preparedStatement.setInt(12, customer.getPackageId());
+} else {
+    preparedStatement.setNull(12, java.sql.Types.INTEGER);
+}
             preparedStatement.setString(13, customer.getAccountNumber());
             preparedStatement.setString(14, customer.getAccountStatus() != null ? customer.getAccountStatus() : "ACTIVE");
             
@@ -186,7 +190,11 @@ public class CustomerDAO {
             preparedStatement.setString(9, customer.getState());
             preparedStatement.setString(10, customer.getPostalCode());
             preparedStatement.setString(11, customer.getCountry());
-            preparedStatement.setInt(12, customer.getPackageId());
+            if (customer.getPackageId() > 0) {
+    preparedStatement.setInt(12, customer.getPackageId());
+} else {
+    preparedStatement.setNull(12, java.sql.Types.INTEGER);
+}
             preparedStatement.setString(13, customer.getAccountStatus());
             preparedStatement.setInt(14, customer.getCustomerId());
             
