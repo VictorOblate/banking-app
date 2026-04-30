@@ -89,6 +89,15 @@ public class OvertimeService {
     }
     
     /**
+     * Get all overtime records
+     * 
+     * @return List of all overtime records
+     */
+    public List<Overtime> getAllOvertimeRecords() {
+        return overtimeDAO.getAllOvertimeRecords();
+    }
+    
+    /**
      * Get all pending overtime records
      * 
      * @return List of pending overtime records

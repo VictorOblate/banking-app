@@ -64,10 +64,12 @@ public class OvertimeDAO {
      * @return Overtime object if found, null otherwise
      */
     public Overtime getOvertimeById(int overtimeId) {
-        String sql = "SELECT overtime_id, employee_id, overtime_date, hours_worked, " +
-                     "hourly_rate, overtime_amount, overtime_type, remarks, status, " +
-                     "created_date, approved_date, process_date FROM overtime " +
-                     "WHERE overtime_id = ?";
+        String sql = "SELECT o.overtime_id, o.employee_id, o.overtime_date, o.hours_worked, " +
+                     "o.hourly_rate, o.overtime_amount, o.overtime_type, o.remarks, o.status, " +
+                     "o.created_date, o.approved_date, o.process_date, " +
+                     "CONCAT(e.first_name, ' ', e.last_name) as employee_name " +
+                     "FROM overtime o LEFT JOIN employees e ON o.employee_id = e.employee_id " +
+                     "WHERE o.overtime_id = ?";
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -98,10 +100,12 @@ public class OvertimeDAO {
      * @return List of overtime records for the employee
      */
     public List<Overtime> getOvertimeByEmployeeId(int employeeId) {
-        String sql = "SELECT overtime_id, employee_id, overtime_date, hours_worked, " +
-                     "hourly_rate, overtime_amount, overtime_type, remarks, status, " +
-                     "created_date, approved_date, process_date FROM overtime " +
-                     "WHERE employee_id = ? ORDER BY overtime_date DESC";
+        String sql = "SELECT o.overtime_id, o.employee_id, o.overtime_date, o.hours_worked, " +
+                     "o.hourly_rate, o.overtime_amount, o.overtime_type, o.remarks, o.status, " +
+                     "o.created_date, o.approved_date, o.process_date, " +
+                     "CONCAT(e.first_name, ' ', e.last_name) as employee_name " +
+                     "FROM overtime o LEFT JOIN employees e ON o.employee_id = e.employee_id " +
+                     "WHERE o.employee_id = ? ORDER BY o.created_date DESC";
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -132,10 +136,12 @@ public class OvertimeDAO {
      * @return List of pending overtime records
      */
     public List<Overtime> getPendingOvertimeRecords() {
-        String sql = "SELECT overtime_id, employee_id, overtime_date, hours_worked, " +
-                     "hourly_rate, overtime_amount, overtime_type, remarks, status, " +
-                     "created_date, approved_date, process_date FROM overtime " +
-                     "WHERE status = 'PENDING' ORDER BY created_date ASC";
+        String sql = "SELECT o.overtime_id, o.employee_id, o.overtime_date, o.hours_worked, " +
+                     "o.hourly_rate, o.overtime_amount, o.overtime_type, o.remarks, o.status, " +
+                     "o.created_date, o.approved_date, o.process_date, " +
+                     "CONCAT(e.first_name, ' ', e.last_name) as employee_name " +
+                     "FROM overtime o LEFT JOIN employees e ON o.employee_id = e.employee_id " +
+                     "WHERE o.status = 'PENDING' ORDER BY o.created_date DESC";
         
         Connection connection = null;
         Statement statement = null;
@@ -165,10 +171,12 @@ public class OvertimeDAO {
      * @return List of approved overtime records
      */
     public List<Overtime> getApprovedOvertimeRecords() {
-        String sql = "SELECT overtime_id, employee_id, overtime_date, hours_worked, " +
-                     "hourly_rate, overtime_amount, overtime_type, remarks, status, " +
-                     "created_date, approved_date, process_date FROM overtime " +
-                     "WHERE status = 'APPROVED' ORDER BY created_date ASC";
+        String sql = "SELECT o.overtime_id, o.employee_id, o.overtime_date, o.hours_worked, " +
+                     "o.hourly_rate, o.overtime_amount, o.overtime_type, o.remarks, o.status, " +
+                     "o.created_date, o.approved_date, o.process_date, " +
+                     "CONCAT(e.first_name, ' ', e.last_name) as employee_name " +
+                     "FROM overtime o LEFT JOIN employees e ON o.employee_id = e.employee_id " +
+                     "WHERE o.status = 'APPROVED' ORDER BY o.created_date DESC";
         
         Connection connection = null;
         Statement statement = null;
@@ -305,6 +313,7 @@ public class OvertimeDAO {
         Overtime overtime = new Overtime();
         overtime.setOvertimeId(resultSet.getInt("overtime_id"));
         overtime.setEmployeeId(resultSet.getInt("employee_id"));
+        overtime.setEmployeeName(resultSet.getString("employee_name"));
         overtime.setOvertimeDate(resultSet.getString("overtime_date"));
         overtime.setHoursWorked(resultSet.getDouble("hours_worked"));
         overtime.setHourlyRate(resultSet.getDouble("hourly_rate"));
@@ -316,6 +325,39 @@ public class OvertimeDAO {
         overtime.setApprovedDate(resultSet.getTimestamp("approved_date"));
         overtime.setProcessDate(resultSet.getTimestamp("process_date"));
         return overtime;
+    }
+    
+    /**
+     * Get all overtime records
+     * 
+     * @return List of all overtime records
+     */
+    public List<Overtime> getAllOvertimeRecords() {
+        String sql = "SELECT o.overtime_id, o.employee_id, o.overtime_date, o.hours_worked, " +
+                     "o.hourly_rate, o.overtime_amount, o.overtime_type, o.remarks, o.status, " +
+                     "o.created_date, o.approved_date, o.process_date, " +
+                     "CONCAT(e.first_name, ' ', e.last_name) as employee_name " +
+                     "FROM overtime o LEFT JOIN employees e ON o.employee_id = e.employee_id " +
+                     "ORDER BY o.created_date DESC";
+
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        List<Overtime> overtimes = new ArrayList<>();
+
+        try {
+            connection = DBConnection.getConnection();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                overtimes.add(mapResultSetToOvertime(resultSet));
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error retrieving all overtime records: " + e.getMessage());
+        } finally {
+            closeResources(resultSet, statement, connection);
+        }
+        return overtimes;
     }
     
     /**

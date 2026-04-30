@@ -57,7 +57,7 @@ public class ReportServlet extends HttpServlet {
                     showReportForm(request, response);
                     break;
                 case "generate":
-                    generateReport(request, response);
+                    showReportForm(request, response);
                     break;
                 case "export":
                     exportReport(request, response);

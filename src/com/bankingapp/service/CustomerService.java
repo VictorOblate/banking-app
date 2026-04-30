@@ -80,12 +80,10 @@ public class CustomerService {
         if (customer == null || customer.getCustomerId() <= 0) {
             return false;
         }
-        
-        if (!isValidCustomer(customer)) {
-            System.out.println("Customer validation failed for update");
+        if (customer.getFirstName() == null || customer.getFirstName().trim().isEmpty() ||
+            customer.getLastName() == null || customer.getLastName().trim().isEmpty()) {
             return false;
         }
-        
         return customerDAO.updateCustomer(customer);
     }
     

@@ -15,6 +15,7 @@ public class Overtime {
     
     private int overtimeId;
     private int employeeId;
+    private String employeeName;
     private String overtimeDate;
     private double hoursWorked;
     private double hourlyRate;
@@ -83,6 +84,14 @@ public class Overtime {
     
     public void setEmployeeId(int employeeId) {
         this.employeeId = employeeId;
+    }
+    
+    public String getEmployeeName() {
+        return employeeName;
+    }
+    
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
     }
     
     public String getOvertimeDate() {

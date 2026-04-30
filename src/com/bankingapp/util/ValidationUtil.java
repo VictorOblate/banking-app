@@ -24,8 +24,8 @@ public class ValidationUtil {
     private static final String EMAIL_PATTERN = 
         "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
     
-    // Phone regex pattern (10 digits)
-    private static final String PHONE_PATTERN = "^[0-9]{10}$";
+    // Phone regex pattern (7-15 digits)
+    private static final String PHONE_PATTERN = "^[0-9]{7,15}$";
     
     /**
      * Validate if string is null or empty
@@ -78,8 +78,8 @@ public class ValidationUtil {
             trimmed.length() > Constants.MAX_NAME_LENGTH) {
             return false;
         }
-        // Allow letters, spaces, and hyphens
-        return trimmed.matches("^[a-zA-Z\\s-]+$");
+        // Allow letters, spaces, hyphens, and apostrophes
+        return trimmed.matches("^[a-zA-Z\\s\\-'.]+$");
     }
     
     /**

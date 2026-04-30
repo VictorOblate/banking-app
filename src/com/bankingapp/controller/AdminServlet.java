@@ -217,13 +217,15 @@ public class AdminServlet extends HttpServlet {
             String phone = request.getParameter("phone");
             String isActiveStr = request.getParameter("isActive");
             
-            // Validate required fields
-            if (username == null || username.trim().isEmpty() ||
-                password == null || password.trim().isEmpty() ||
-                fullName == null || fullName.trim().isEmpty()) {
-                request.setAttribute("error", "Username, password, and full name are required");
-                showAddForm(request, response);
-                return;
+            // Validate required fields for add
+            if (adminIdStr == null || adminIdStr.isEmpty()) {
+                if (username == null || username.trim().isEmpty() ||
+                    password == null || password.trim().isEmpty() ||
+                    fullName == null || fullName.trim().isEmpty()) {
+                    request.setAttribute("error", "Username, password, and full name are required");
+                    showAddForm(request, response);
+                    return;
+                }
             }
             
             // Create admin object
@@ -246,6 +248,13 @@ public class AdminServlet extends HttpServlet {
             } else {
                 // Update existing admin
                 admin.setAdminId(Integer.parseInt(adminIdStr));
+                // If password is blank, fetch existing password
+                if (password == null || password.trim().isEmpty()) {
+                    Admin existing = adminService.getAdminById(Integer.parseInt(adminIdStr));
+                    if (existing != null) {
+                        admin.setPassword(existing.getPassword());
+                    }
+                }
                 success = adminService.updateAdmin(admin);
                 message = success ? "Admin updated successfully" : "Failed to update admin";
             }

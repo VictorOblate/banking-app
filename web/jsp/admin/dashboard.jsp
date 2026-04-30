@@ -144,7 +144,7 @@
                         <p>Schedule and manage employee work shifts and time tracking.</p>
                         <div class="mt-3">
                             <a href="${pageContext.request.contextPath}/shift?action=list" class="btn btn-primary btn-small">View Shifts</a>
-                            <a href="${pageContext.request.contextPath}/shift?action=schedule" class="btn btn-secondary btn-small">Schedule Shift</a>
+                            <a href="${pageContext.request.contextPath}/shift?action=add" class="btn btn-secondary btn-small">Add Shift</a>
                         </div>
                     </div>
 
@@ -159,7 +159,7 @@
                         <p>Generate comprehensive reports and analyze banking performance metrics.</p>
                         <div class="mt-3">
                             <a href="${pageContext.request.contextPath}/report?action=generate" class="btn btn-primary btn-small">Generate Report</a>
-                            <a href="${pageContext.request.contextPath}/report?action=view" class="btn btn-secondary btn-small">View Reports</a>
+                            <a href="${pageContext.request.contextPath}/report?action=list" class="btn btn-secondary btn-small">View Reports</a>
                         </div>
                     </div>
                 </div>

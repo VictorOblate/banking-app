@@ -108,8 +108,7 @@ public class AdminService {
      */
     public boolean updateAdmin(Admin admin) {
         // Validate input
-        if (admin == null || admin.getAdminId() <= 0 || 
-            admin.getPassword() == null || admin.getPassword().trim().isEmpty() ||
+        if (admin == null || admin.getAdminId() <= 0 ||
             admin.getFullName() == null || admin.getFullName().trim().isEmpty()) {
             System.out.println("Invalid admin data provided for update");
             return false;

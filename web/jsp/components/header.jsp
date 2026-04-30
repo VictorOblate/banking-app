@@ -42,8 +42,14 @@
             <a href="<%= request.getContextPath() %>/transaction" class="<%= request.getRequestURI().contains("transaction") ? "active" : "" %>">
                 Transactions
             </a>
+            <a href="<%= request.getContextPath() %>/payment" class="<%= request.getRequestURI().contains("payment") ? "active" : "" %>">
+                Payments
+            </a>
             <a href="<%= request.getContextPath() %>/report" class="<%= request.getRequestURI().contains("report") ? "active" : "" %>">
                 Reports
+            </a>
+            <a href="<%= request.getContextPath() %>/admin" class="<%= request.getServletPath() != null && request.getServletPath().equals("/admin") ? "active" : "" %>">
+                Profile
             </a>
         </nav>
         

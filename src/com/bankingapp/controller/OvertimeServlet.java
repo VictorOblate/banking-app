@@ -104,12 +104,17 @@ public class OvertimeServlet extends HttpServlet {
         try {
             String status = request.getParameter("status");
             List<Overtime> overtimes;
-            
+
             if (status != null && !status.isEmpty()) {
-                // Filter by status - would need to add method in OvertimeService
-                overtimes = overtimeService.getPendingOvertimeRecords(); // For now, show pending
+                if ("PENDING".equals(status)) {
+                    overtimes = overtimeService.getPendingOvertimeRecords();
+                } else if ("APPROVED".equals(status)) {
+                    overtimes = overtimeService.getApprovedOvertimeRecords();
+                } else {
+                    overtimes = overtimeService.getAllOvertimeRecords();
+                }
             } else {
-                overtimes = overtimeService.getPendingOvertimeRecords();
+                overtimes = overtimeService.getAllOvertimeRecords();
             }
 
             request.setAttribute("overtimes", overtimes);

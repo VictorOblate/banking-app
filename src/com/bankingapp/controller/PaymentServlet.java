@@ -282,6 +282,14 @@ public class PaymentServlet extends HttpServlet {
                 payment.setCustomerId(Integer.parseInt(customerIdStr));
             }
 
+            String paymentDate = request.getParameter("paymentDate");
+            if (paymentDate != null && !paymentDate.isEmpty()) {
+                payment.setPaymentDate(paymentDate);
+            } else {
+                payment.setPaymentDate(new java.text.SimpleDateFormat("yyyy-MM-dd")
+                    .format(new java.util.Date()));
+            }
+
             boolean success = false;
             String message = "";
 

@@ -83,8 +83,8 @@
                 <tbody>
                     <c:forEach var="overtime" items="${overtimes}">
                         <tr>
-                            <td>${overtime.employeeId}</td>
-                            <td>${overtime.employeeId}</td>
+                            <td>${overtime.overtimeId}</td>
+                            <td>${overtime.employeeName != null ? overtime.employeeName : overtime.employeeId}</td>
                             <td>${overtime.overtimeDate}</td>
                             <td>${overtime.hoursWorked}</td>
                             <td>₹<fmt:formatNumber value="${overtime.hourlyRate}" type="number" maxFractionDigits="2"/></td>
