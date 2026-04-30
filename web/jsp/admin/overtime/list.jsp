@@ -36,7 +36,7 @@
     </style>
 </head>
 <body>
-    <jsp:include page="/jsp/components/header.jsp" />
+    <%@ include file="/jsp/components/header.jsp" %>
     
     <div class="container">
         <div class="header-section">
@@ -85,7 +85,7 @@
                         <tr>
                             <td>${overtime.employeeId}</td>
                             <td>${overtime.employeeId}</td>
-                            <td><fmt:formatDate value="${overtime.overtimeDate}" pattern="dd-MMM-yyyy"/></td>
+                            <td>${overtime.overtimeDate}</td>
                             <td>${overtime.hoursWorked}</td>
                             <td>₹<fmt:formatNumber value="${overtime.hourlyRate}" type="number" maxFractionDigits="2"/></td>
                             <td>₹<fmt:formatNumber value="${overtime.overtimeAmount}" type="number" maxFractionDigits="2"/></td>
@@ -118,6 +118,6 @@
         </c:if>
     </div>
     
-    <jsp:include page="/jsp/components/footer.jsp" />
+    <%@ include file="/jsp/components/footer.jsp" %>
 </body>
 </html>

@@ -27,7 +27,7 @@
     </style>
 </head>
 <body>
-    <jsp:include page="/jsp/components/header.jsp" />
+    <%@ include file="/jsp/components/header.jsp" %>
     
     <div class="container">
         <c:if test="${not empty success}">
@@ -70,6 +70,6 @@
         </c:if>
     </div>
     
-    <jsp:include page="/jsp/components/footer.jsp" />
+    <%@ include file="/jsp/components/footer.jsp" %>
 </body>
 </html>

@@ -37,7 +37,7 @@
     </style>
 </head>
 <body>
-    <jsp:include page="/jsp/components/header.jsp" />
+    <%@ include file="/jsp/components/header.jsp" %>
     
     <div class="container">
         <div class="header-section">
@@ -99,7 +99,7 @@
                             <td>${batch.batchType}</td>
                             <td>${batch.totalRecords}</td>
                             <td><fmt:formatNumber value="${batch.totalAmount}" type="currency" currencySymbol="₹"/></td>
-                            <td><fmt:formatDate value="${batch.paymentDate}" pattern="dd-MMM-yyyy"/></td>
+                            <td>${batch.paymentDate}</td>
                             <td>
                                 <span class="status-badge status-${batch.batchStatus.toLowerCase()}">
                                     ${batch.batchStatus}
@@ -132,6 +132,6 @@
         </c:if>
     </div>
     
-    <jsp:include page="/jsp/components/footer.jsp" />
+    <%@ include file="/jsp/components/footer.jsp" %>
 </body>
 </html>

@@ -22,7 +22,7 @@
     </style>
 </head>
 <body>
-    <jsp:include page="/jsp/components/header.jsp" />
+    <%@ include file="/jsp/components/header.jsp" %>
     
     <div class="container">
         <h1><c:if test="${isView}">View</c:if> Overtime Record</h1>
@@ -113,7 +113,7 @@
         </form>
     </div>
     
-    <jsp:include page="/jsp/components/footer.jsp" />
+    <%@ include file="/jsp/components/footer.jsp" %>
     
     <script>
         function validateForm() {

@@ -240,6 +240,7 @@
                     </div>
                 </div>
             </div>
+            </div><%-- closes report-cards grid --%>
 
             <!-- Recent Reports -->
             <div class="card">

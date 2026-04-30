@@ -24,7 +24,7 @@
     </style>
 </head>
 <body>
-    <jsp:include page="/jsp/components/header.jsp" />
+    <%@ include file="/jsp/components/header.jsp" %>
     
     <div class="container">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
@@ -69,7 +69,7 @@
         </form>
     </div>
     
-    <jsp:include page="/jsp/components/footer.jsp" />
+    <%@ include file="/jsp/components/footer.jsp" %>
     
     <script>
         function validateForm() {

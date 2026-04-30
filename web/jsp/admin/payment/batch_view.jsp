@@ -40,7 +40,7 @@
     </style>
 </head>
 <body>
-    <jsp:include page="/jsp/components/header.jsp" />
+    <%@ include file="/jsp/components/header.jsp" %>
     
     <div class="container">
         <div class="back-link">
@@ -73,10 +73,10 @@
                     <div class="detail-label">Type:</div>
                     <div class="detail-value">
                         <strong>${batch.batchType}</strong>
-                        <c:if test="${batch.batchType == 'SALARY'">
+                        <c:if test="${batch.batchType == 'SALARY'}">
                             (Employee Salaries)
                         </c:if>
-                        <c:if test="${batch.batchType == 'OVERTIME'">
+                        <c:if test="${batch.batchType == 'OVERTIME'}">
                             (Overtime Compensation)
                         </c:if>
                     </div>
@@ -93,7 +93,7 @@
                 
                 <div class="detail-row">
                     <div class="detail-label">Payment Date:</div>
-                    <div class="detail-value"><fmt:formatDate value="${batch.paymentDate}" pattern="dd-MMM-yyyy"/></div>
+                    <div class="detail-value">${batch.paymentDate}</div>
                 </div>
                 
                 <div class="detail-row">
@@ -196,6 +196,6 @@
         </c:if>
     </div>
     
-    <jsp:include page="/jsp/components/footer.jsp" />
+    <%@ include file="/jsp/components/footer.jsp" %>
 </body>
 </html>

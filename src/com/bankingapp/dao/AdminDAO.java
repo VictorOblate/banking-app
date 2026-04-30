@@ -250,8 +250,8 @@ public class AdminDAO {
      * @return true if update was successful, false otherwise
      */
     public boolean updateAdmin(Admin admin) {
-        String sql = "UPDATE admin SET full_name = ?, email = ?, phone = ?, password = ?, is_active = ?, " +
-                     "modified_date = NOW() WHERE admin_id = ?";
+        String sql = "UPDATE admin SET full_name = ?, email = ?, phone = ?, password = ?, is_active = ? " +
+                     "WHERE admin_id = ?";
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;
