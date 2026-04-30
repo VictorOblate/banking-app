@@ -324,7 +324,7 @@ public class PackageDAO {
      * @return Number of active packages
      */
     public int getActivePackagesCount() {
-        String sql = "SELECT COUNT(*) as count FROM packages WHERE is_active = FALSE";
+        String sql = "SELECT COUNT(*) as count FROM packages WHERE is_active = TRUE";
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;
