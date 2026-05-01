@@ -12,8 +12,10 @@ import javax.servlet.http.HttpSession;
 import com.bankingapp.model.Admin;
 import com.bankingapp.model.Payment;
 import com.bankingapp.model.BulkPaymentBatch;
+import com.bankingapp.model.Employee;
 import com.bankingapp.service.TransactionPaymentService;
 import com.bankingapp.service.BulkPaymentService;
+import com.bankingapp.service.EmployeeService;
 import com.bankingapp.util.Constants;
 
 /**
@@ -380,6 +382,10 @@ public class PaymentServlet extends HttpServlet {
     private void showEmployeePaymentForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, java.io.IOException {
         try {
+            EmployeeService employeeService = new EmployeeService();
+            List<Employee> employees = employeeService.getAllEmployees();
+            request.setAttribute("employees", employees);
+            
             Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
             if (admin != null) {
                 request.setAttribute("admin", admin);

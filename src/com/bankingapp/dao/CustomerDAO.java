@@ -48,10 +48,10 @@ public class CustomerDAO {
             preparedStatement.setString(10, customer.getPostalCode());
             preparedStatement.setString(11, customer.getCountry());
             if (customer.getPackageId() > 0) {
-    preparedStatement.setInt(12, customer.getPackageId());
-} else {
-    preparedStatement.setNull(12, java.sql.Types.INTEGER);
-}
+                preparedStatement.setInt(12, customer.getPackageId());
+            } else {
+                preparedStatement.setNull(12, java.sql.Types.INTEGER);
+            }
             preparedStatement.setString(13, customer.getAccountNumber());
             preparedStatement.setString(14, customer.getAccountStatus() != null ? customer.getAccountStatus() : "ACTIVE");
             
@@ -125,9 +125,11 @@ public class CustomerDAO {
      */
     public List<Customer> getAllCustomers() {
         String sql = "SELECT customer_id, first_name, last_name, email, phone, date_of_birth, " +
-                     "gender, address, city, state, postal_code, country, package_id, " +
-                     "account_number, account_status, registration_date, modified_date " +
-                     "FROM customers ORDER BY customer_id DESC";
+             "gender, address, city, state, postal_code, country, package_id, " +
+             "account_number, account_status, registration_date, modified_date " +
+             "FROM customers " +
+             "WHERE account_status <> 'INACTIVE' " +
+             "ORDER BY customer_id DESC";
         
         Connection connection = null;
         Statement statement = null;

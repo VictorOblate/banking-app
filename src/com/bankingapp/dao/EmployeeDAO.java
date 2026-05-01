@@ -136,7 +136,9 @@ public class EmployeeDAO {
                      "gender, address, city, state, postal_code, country, employee_code, " +
                      "designation, department, shift_id, basic_salary, hire_date, " +
                      "employment_status, bank_account_number, registration_date, modified_date " +
-                     "FROM employees ORDER BY employee_id DESC";
+                     "FROM employees " +
+                     "WHERE employment_status <> 'INACTIVE' " +
+                     "ORDER BY employee_id DESC";
         
         Connection connection = null;
         Statement statement = null;
@@ -270,7 +272,7 @@ public class EmployeeDAO {
      * @return Total number of employees in the system
      */
     public int getEmployeeCount() {
-        String sql = "SELECT COUNT(*) as count FROM employees";
+        String sql = "SELECT COUNT(*) as count FROM employees WHERE employment_status <> 'INACTIVE'";
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;

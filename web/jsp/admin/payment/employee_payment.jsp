@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.bankingapp.model.Employee" %>
-<%@ page import="com.bankingapp.service.EmployeeService" %>
 <%@ page import="com.bankingapp.util.Constants" %>
 <%
     // Check if user is logged in
@@ -11,9 +10,8 @@
         return;
     }
     
-    // Get all employees for dropdown
-    EmployeeService employeeService = new EmployeeService();
-    List<Employee> employees = employeeService.getAllEmployees();
+    // Get employees from request attribute
+    List<Employee> employees = (List<Employee>) request.getAttribute("employees");
 %>
 <!DOCTYPE html>
 <html lang="en">

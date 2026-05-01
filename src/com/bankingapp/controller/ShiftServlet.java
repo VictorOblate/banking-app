@@ -237,7 +237,7 @@ public class ShiftServlet extends HttpServlet {
             shift.setEndTime(endTime);
             shift.setShiftType(shiftType);
             shift.setDescription(description);
-            shift.setActive("true".equals(isActiveStr) || "on".equals(isActiveStr));
+            shift.setActive("true".equalsIgnoreCase(isActiveStr) || "on".equalsIgnoreCase(isActiveStr));
 
             boolean success = false;
             String message = "";

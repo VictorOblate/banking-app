@@ -246,7 +246,7 @@ public class PackageServlet extends HttpServlet {
             pkg.setBenefits(benefits);
             pkg.setMonthlyFee(monthlyFeeStr != null && !monthlyFeeStr.isEmpty() ? Double.parseDouble(monthlyFeeStr) : 0.0);
             pkg.setAnnualFee(annualFeeStr != null && !annualFeeStr.isEmpty() ? Double.parseDouble(annualFeeStr) : 0.0);
-            pkg.setActive("true".equals(isActiveStr));
+            pkg.setActive("true".equalsIgnoreCase(isActiveStr));
 
             boolean success = false;
             String message = "";
