@@ -115,14 +115,7 @@ public class OvertimeService {
         return overtimeDAO.getApprovedOvertimeRecords();
     }
     
-    /**
-     * Get all overtime records
-     * 
-     * @return List of all overtime records
-     */
-    public List<Overtime> getAllOvertimeRecords() {
-        return overtimeDAO.getAllOvertimeRecords();
-    }
+    
     
     /**
      * Approve an overtime record
