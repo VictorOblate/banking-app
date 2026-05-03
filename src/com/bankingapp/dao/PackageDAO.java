@@ -233,7 +233,7 @@ public class PackageDAO {
      * @return true if package was deleted successfully, false otherwise
      */
     public boolean deletePackage(int packageId) {
-        String sql = "UPDATE packages SET is_active = FALSE, modified_date = ? WHERE package_id = ?";
+        String sql = "DELETE FROM packages WHERE package_id = ?";
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -241,11 +241,10 @@ public class PackageDAO {
         try {
             connection = DBConnection.getConnection();
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
-            preparedStatement.setInt(2, packageId);
+            preparedStatement.setInt(1, packageId);
             
             int rowsAffected = preparedStatement.executeUpdate();
-            System.out.println("Package deleted (soft delete) successfully: " + packageId);
+            System.out.println("Package deleted successfully: " + packageId);
             return rowsAffected > 0;
             
         } catch (SQLException | ClassNotFoundException e) {

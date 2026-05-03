@@ -398,7 +398,7 @@ public class PaymentDAO {
      * @return true if payment was deleted successfully, false otherwise
      */
     public boolean deletePayment(int paymentId) {
-        String sql = "DELETE FROM payments WHERE payment_id = ?";
+        String sql = "DELETE FROM payment WHERE payment_id = ?";
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -409,7 +409,7 @@ public class PaymentDAO {
             preparedStatement.setInt(1, paymentId);
             
             int rowsAffected = preparedStatement.executeUpdate();
-            System.out.println("Payment deleted: " + paymentId);
+            System.out.println("Payment deleted successfully: " + paymentId);
             return rowsAffected > 0;
             
         } catch (SQLException | ClassNotFoundException e) {

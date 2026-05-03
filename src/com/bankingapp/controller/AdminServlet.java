@@ -221,11 +221,7 @@ public class AdminServlet extends HttpServlet {
             admin.setFullName(fullName);
             admin.setEmail(email);
             admin.setPhone(phone);
-            // Consistent isActive parsing
-            boolean isActive = "true".equalsIgnoreCase(isActiveStr)
-                    || "on".equalsIgnoreCase(isActiveStr)
-                    || "yes".equalsIgnoreCase(isActiveStr);
-            admin.setActive(isActive);
+            admin.setActive(Boolean.parseBoolean(isActiveStr));
             
             boolean success = false;
             String message = "";

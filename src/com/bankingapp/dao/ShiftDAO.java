@@ -190,7 +190,7 @@ public class ShiftDAO {
      * @return true if shift was deleted successfully, false otherwise
      */
     public boolean deleteShift(int shiftId) {
-        String sql = "UPDATE shifts SET is_active = FALSE, modified_date = ? WHERE shift_id = ?";
+        String sql = "DELETE FROM shifts WHERE shift_id = ?";
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -198,11 +198,10 @@ public class ShiftDAO {
         try {
             connection = DBConnection.getConnection();
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
-            preparedStatement.setInt(2, shiftId);
+            preparedStatement.setInt(1, shiftId);
             
             int rowsAffected = preparedStatement.executeUpdate();
-            System.out.println("Shift deleted (soft delete) successfully: " + shiftId);
+            System.out.println("Shift deleted successfully: " + shiftId);
             return rowsAffected > 0;
             
         } catch (SQLException | ClassNotFoundException e) {

@@ -238,8 +238,7 @@ public class EmployeeDAO {
      * @return true if delete was successful, false otherwise
      */
     public boolean deleteEmployee(int employeeId) {
-        String sql = "UPDATE employees SET employment_status = 'INACTIVE', modified_date = NOW() " +
-                     "WHERE employee_id = ?";
+        String sql = "DELETE FROM employees WHERE employee_id = ?";
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;

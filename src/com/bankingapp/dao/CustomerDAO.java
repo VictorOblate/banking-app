@@ -227,8 +227,7 @@ public class CustomerDAO {
      * @return true if delete was successful, false otherwise
      */
     public boolean deleteCustomer(int customerId) {
-        String sql = "UPDATE customers SET account_status = 'INACTIVE', modified_date = NOW() " +
-                     "WHERE customer_id = ?";
+        String sql = "DELETE FROM customers WHERE customer_id = ?";
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;

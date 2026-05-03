@@ -213,11 +213,7 @@ public class ShiftServlet extends HttpServlet {
             shift.setEndTime(endTime);
             shift.setShiftType(shiftType);
             shift.setDescription(description);
-            // Consistent isActive parsing
-            boolean isActive = "true".equalsIgnoreCase(isActiveStr)
-                    || "on".equalsIgnoreCase(isActiveStr)
-                    || "yes".equalsIgnoreCase(isActiveStr);
-            shift.setActive(isActive);
+            shift.setActive(Boolean.parseBoolean(isActiveStr));
 
             boolean success = false;
             String message = "";

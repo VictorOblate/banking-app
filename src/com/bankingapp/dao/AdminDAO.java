@@ -286,16 +286,15 @@ public class AdminDAO {
     }
     
     /**
-     * Delete/Deactivate an admin user (soft delete)
+     * Delete an admin user (hard delete)
      * 
-     * This method deactivates an admin account instead of permanently deleting it
-     * to maintain audit trail integrity.
+     * This method permanently deletes an admin record from the database.
      * 
-     * @param adminId The ID of the admin to deactivate
+     * @param adminId The ID of the admin to delete
      * @return true if deletion was successful, false otherwise
      */
     public boolean deleteAdmin(int adminId) {
-        String sql = "UPDATE admin SET is_active = FALSE WHERE admin_id = ?";
+        String sql = "DELETE FROM admin WHERE admin_id = ?";
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -306,7 +305,7 @@ public class AdminDAO {
             preparedStatement.setInt(1, adminId);
             
             int rowsAffected = preparedStatement.executeUpdate();
-            System.out.println("Admin deactivated successfully: " + adminId);
+            System.out.println("Admin deleted successfully: " + adminId);
             return rowsAffected > 0;
             
         } catch (SQLException | ClassNotFoundException e) {

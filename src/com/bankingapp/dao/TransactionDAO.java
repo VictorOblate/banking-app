@@ -382,7 +382,7 @@ public class TransactionDAO {
      * @return true if transaction was deleted successfully, false otherwise
      */
     public boolean deleteTransaction(int transactionId) {
-        String sql = "DELETE FROM transactions WHERE transaction_id = ?";
+        String sql = "DELETE FROM transaction WHERE transaction_id = ?";
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -393,7 +393,7 @@ public class TransactionDAO {
             preparedStatement.setInt(1, transactionId);
             
             int rowsAffected = preparedStatement.executeUpdate();
-            System.out.println("Transaction deleted: " + transactionId);
+            System.out.println("Transaction deleted successfully: " + transactionId);
             return rowsAffected > 0;
             
         } catch (SQLException | ClassNotFoundException e) {
