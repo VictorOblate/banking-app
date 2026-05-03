@@ -93,6 +93,12 @@ public class ShiftServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
+            // Pick up flash messages from query parameters
+            String msg = request.getParameter("success");
+            if (msg != null) request.setAttribute("success", msg);
+            msg = request.getParameter("error");
+            if (msg != null) request.setAttribute("error", msg);
+            
             // Get all shifts
             List<Shift> shifts = shiftService.getAllShifts();
             request.setAttribute("shifts", shifts);
@@ -106,12 +112,6 @@ public class ShiftServlet extends HttpServlet {
             request.setAttribute("activeShifts", activeShifts);
             request.setAttribute("todayShifts", todayShifts);
 
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-
             // Forward to shift list page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/shift/list.jsp");
             dispatcher.forward(request, response);
@@ -119,12 +119,6 @@ public class ShiftServlet extends HttpServlet {
         } catch (Exception e) {
             System.err.println("Error listing shifts: " + e.getMessage());
             request.setAttribute("error", Constants.ERROR_DATABASE);
-            
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
             
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/shift/list.jsp");
             dispatcher.forward(request, response);
@@ -135,12 +129,6 @@ public class ShiftServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-            
             // Forward to shift form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/shift/form.jsp");
             dispatcher.forward(request, response);
@@ -168,12 +156,6 @@ public class ShiftServlet extends HttpServlet {
             request.setAttribute("shift", shift);
             request.setAttribute("isEdit", true);
 
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-
             // Forward to shift form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/shift/form.jsp");
             dispatcher.forward(request, response);
@@ -200,12 +182,6 @@ public class ShiftServlet extends HttpServlet {
 
             request.setAttribute("shift", shift);
             request.setAttribute("isView", true);
-
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
 
             // Forward to shift form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/shift/form.jsp");
@@ -237,7 +213,11 @@ public class ShiftServlet extends HttpServlet {
             shift.setEndTime(endTime);
             shift.setShiftType(shiftType);
             shift.setDescription(description);
-            shift.setActive("true".equalsIgnoreCase(isActiveStr) || "on".equalsIgnoreCase(isActiveStr));
+            // Consistent isActive parsing
+            boolean isActive = "true".equalsIgnoreCase(isActiveStr)
+                    || "on".equalsIgnoreCase(isActiveStr)
+                    || "yes".equalsIgnoreCase(isActiveStr);
+            shift.setActive(isActive);
 
             boolean success = false;
             String message = "";
@@ -254,20 +234,17 @@ public class ShiftServlet extends HttpServlet {
                 message = success ? "Shift updated successfully" : "Failed to update shift";
             }
 
-            if (success) {
-                request.setAttribute("success", message);
-            } else {
-                request.setAttribute("error", message);
-            }
-
-            // Redirect to shift list
-            response.sendRedirect(request.getContextPath() + "/shift?action=list");
+            // Redirect with flash message
+            String redirectParam = success ? "success" : "error";
+            response.sendRedirect(request.getContextPath() + "/shift?action=list&" + redirectParam + "=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
 
         } catch (Exception e) {
             System.err.println("Error saving shift: " + e.getMessage());
             e.printStackTrace();
-            request.setAttribute("error", "Error saving shift");
-            listShifts(request, response);
+            String message = "Error saving shift";
+            response.sendRedirect(request.getContextPath() + "/shift?action=list&error=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
         }
     }
 
@@ -279,14 +256,10 @@ public class ShiftServlet extends HttpServlet {
 
             boolean success = shiftService.deleteShift(shiftId);
 
-            if (success) {
-                request.setAttribute("success", "Shift deleted successfully");
-            } else {
-                request.setAttribute("error", "Failed to delete shift");
-            }
-
-            // Redirect to shift list
-            response.sendRedirect(request.getContextPath() + "/shift?action=list");
+            String message = success ? "Shift deleted successfully" : "Failed to delete shift";
+            String redirectParam = success ? "success" : "error";
+            response.sendRedirect(request.getContextPath() + "/shift?action=list&" + redirectParam + "=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
 
         } catch (Exception e) {
             System.err.println("Error deleting shift: " + e.getMessage());

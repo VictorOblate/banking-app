@@ -100,6 +100,12 @@ public class PackageServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
+            // Pick up flash messages from query parameters
+            String msg = request.getParameter("success");
+            if (msg != null) request.setAttribute("success", msg);
+            msg = request.getParameter("error");
+            if (msg != null) request.setAttribute("error", msg);
+            
             // Get all packages (active and inactive) for admin management
             List<Package> packages = packageService.getAllPackagesForManagement();
             request.setAttribute("packages", packages);
@@ -113,12 +119,6 @@ public class PackageServlet extends HttpServlet {
             request.setAttribute("activePackages", activePackages);
             request.setAttribute("inactivePackages", inactivePackages);
 
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-
             // Forward to package list page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/package/list.jsp");
             dispatcher.forward(request, response);
@@ -126,12 +126,6 @@ public class PackageServlet extends HttpServlet {
         } catch (Exception e) {
             System.err.println("Error listing packages: " + e.getMessage());
             request.setAttribute("error", Constants.ERROR_DATABASE);
-            
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
             
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/package/list.jsp");
             dispatcher.forward(request, response);
@@ -142,12 +136,6 @@ public class PackageServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-            
             // Forward to package form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/package/form.jsp");
             dispatcher.forward(request, response);
@@ -175,12 +163,6 @@ public class PackageServlet extends HttpServlet {
             request.setAttribute("package", pkg);
             request.setAttribute("isEdit", true);
 
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-
             // Forward to package form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/package/form.jsp");
             dispatcher.forward(request, response);
@@ -207,12 +189,6 @@ public class PackageServlet extends HttpServlet {
 
             request.setAttribute("package", pkg);
             request.setAttribute("isView", true);
-
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
 
             // Forward to package form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/package/form.jsp");
@@ -246,7 +222,11 @@ public class PackageServlet extends HttpServlet {
             pkg.setBenefits(benefits);
             pkg.setMonthlyFee(monthlyFeeStr != null && !monthlyFeeStr.isEmpty() ? Double.parseDouble(monthlyFeeStr) : 0.0);
             pkg.setAnnualFee(annualFeeStr != null && !annualFeeStr.isEmpty() ? Double.parseDouble(annualFeeStr) : 0.0);
-            pkg.setActive("true".equalsIgnoreCase(isActiveStr));
+            // Consistent isActive parsing
+            boolean isActive = "true".equalsIgnoreCase(isActiveStr)
+                    || "on".equalsIgnoreCase(isActiveStr)
+                    || "yes".equalsIgnoreCase(isActiveStr);
+            pkg.setActive(isActive);
 
             boolean success = false;
             String message = "";
@@ -263,20 +243,17 @@ public class PackageServlet extends HttpServlet {
                 message = success ? "Package updated successfully" : "Failed to update package";
             }
 
-            if (success) {
-                request.setAttribute("success", message);
-            } else {
-                request.setAttribute("error", message);
-            }
-
-            // Redirect to package list
-            response.sendRedirect(request.getContextPath() + "/package?action=list");
+            // Redirect with flash message
+            String redirectParam = success ? "success" : "error";
+            response.sendRedirect(request.getContextPath() + "/package?action=list&" + redirectParam + "=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
 
         } catch (Exception e) {
             System.err.println("Error saving package: " + e.getMessage());
             e.printStackTrace();
-            request.setAttribute("error", "Error saving package");
-            listPackages(request, response);
+            String message = "Error saving package";
+            response.sendRedirect(request.getContextPath() + "/package?action=list&error=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
         }
     }
 
@@ -288,14 +265,10 @@ public class PackageServlet extends HttpServlet {
 
             boolean success = packageService.deletePackage(packageId);
 
-            if (success) {
-                request.setAttribute("success", "Package deleted successfully");
-            } else {
-                request.setAttribute("error", "Failed to delete package");
-            }
-
-            // Redirect to package list
-            response.sendRedirect(request.getContextPath() + "/package?action=list");
+            String message = success ? "Package deleted successfully" : "Failed to delete package";
+            String redirectParam = success ? "success" : "error";
+            response.sendRedirect(request.getContextPath() + "/package?action=list&" + redirectParam + "=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
 
         } catch (Exception e) {
             System.err.println("Error deleting package: " + e.getMessage());

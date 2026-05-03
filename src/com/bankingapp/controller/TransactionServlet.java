@@ -93,6 +93,12 @@ public class TransactionServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
+            // Pick up flash messages from query parameters
+            String msg = request.getParameter("success");
+            if (msg != null) request.setAttribute("success", msg);
+            msg = request.getParameter("error");
+            if (msg != null) request.setAttribute("error", msg);
+            
             // Get all transactions
             List<Transaction> transactions = transactionService.getAllTransactions();
             request.setAttribute("transactions", transactions);
@@ -108,12 +114,6 @@ public class TransactionServlet extends HttpServlet {
             request.setAttribute("totalAmount", totalAmount);
             request.setAttribute("todayAmount", todayAmount);
 
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-
             // Forward to transaction list page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/transaction/list.jsp");
             dispatcher.forward(request, response);
@@ -121,12 +121,6 @@ public class TransactionServlet extends HttpServlet {
         } catch (Exception e) {
             System.err.println("Error listing transactions: " + e.getMessage());
             request.setAttribute("error", Constants.ERROR_DATABASE);
-            
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
             
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/transaction/list.jsp");
             dispatcher.forward(request, response);
@@ -137,12 +131,6 @@ public class TransactionServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-            
             // Forward to transaction form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/transaction/form.jsp");
             dispatcher.forward(request, response);
@@ -170,12 +158,6 @@ public class TransactionServlet extends HttpServlet {
             request.setAttribute("transaction", transaction);
             request.setAttribute("isEdit", true);
 
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-
             // Forward to transaction form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/transaction/form.jsp");
             dispatcher.forward(request, response);
@@ -202,12 +184,6 @@ public class TransactionServlet extends HttpServlet {
 
             request.setAttribute("transaction", transaction);
             request.setAttribute("isView", true);
-
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
 
             // Forward to transaction form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/transaction/form.jsp");
@@ -259,20 +235,17 @@ public class TransactionServlet extends HttpServlet {
                 message = success ? "Transaction updated successfully" : "Failed to update transaction";
             }
 
-            if (success) {
-                request.setAttribute("success", message);
-            } else {
-                request.setAttribute("error", message);
-            }
-
-            // Redirect to transaction list
-            response.sendRedirect(request.getContextPath() + "/transaction?action=list");
+            // Redirect with flash message
+            String redirectParam = success ? "success" : "error";
+            response.sendRedirect(request.getContextPath() + "/transaction?action=list&" + redirectParam + "=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
 
         } catch (Exception e) {
             System.err.println("Error saving transaction: " + e.getMessage());
             e.printStackTrace();
-            request.setAttribute("error", "Error saving transaction");
-            listTransactions(request, response);
+            String message = "Error saving transaction";
+            response.sendRedirect(request.getContextPath() + "/transaction?action=list&error=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
         }
     }
 
@@ -284,14 +257,10 @@ public class TransactionServlet extends HttpServlet {
 
             boolean success = transactionService.deleteTransaction(transactionId);
 
-            if (success) {
-                request.setAttribute("success", "Transaction deleted successfully");
-            } else {
-                request.setAttribute("error", "Failed to delete transaction");
-            }
-
-            // Redirect to transaction list
-            response.sendRedirect(request.getContextPath() + "/transaction?action=list");
+            String message = success ? "Transaction deleted successfully" : "Failed to delete transaction";
+            String redirectParam = success ? "success" : "error";
+            response.sendRedirect(request.getContextPath() + "/transaction?action=list&" + redirectParam + "=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
 
         } catch (Exception e) {
             System.err.println("Error deleting transaction: " + e.getMessage());

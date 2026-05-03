@@ -102,14 +102,14 @@ public class EmployeeServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
         
         try {
+            // Pick up flash messages from query parameters
+            String msg = request.getParameter("success");
+            if (msg != null) request.setAttribute("success", msg);
+            msg = request.getParameter("error");
+            if (msg != null) request.setAttribute("error", msg);
+            
             List<Employee> employees = employeeService.getAllEmployees();
             request.setAttribute("employees", employees);
-            
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
             
             RequestDispatcher dispatcher = request.getRequestDispatcher(Constants.PAGE_EMPLOYEE_LIST);
             dispatcher.forward(request, response);
@@ -117,12 +117,6 @@ public class EmployeeServlet extends HttpServlet {
         } catch (Exception e) {
             System.err.println("Error listing employees: " + e.getMessage());
             request.setAttribute("error", Constants.ERROR_DATABASE);
-            
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
             
             RequestDispatcher dispatcher = request.getRequestDispatcher(Constants.PAGE_EMPLOYEE_LIST);
             dispatcher.forward(request, response);
@@ -138,12 +132,6 @@ public class EmployeeServlet extends HttpServlet {
         try {
             List<Shift> shifts = shiftService.getAllShifts();
             request.setAttribute("shifts", shifts);
-            
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
             
             RequestDispatcher dispatcher = request.getRequestDispatcher(Constants.PAGE_EMPLOYEE_FORM);
             dispatcher.forward(request, response);
@@ -176,12 +164,6 @@ public class EmployeeServlet extends HttpServlet {
             request.setAttribute("shifts", shifts);
             request.setAttribute("isEdit", true);
             
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-            
             RequestDispatcher dispatcher = request.getRequestDispatcher(Constants.PAGE_EMPLOYEE_FORM);
             dispatcher.forward(request, response);
             
@@ -208,6 +190,12 @@ public class EmployeeServlet extends HttpServlet {
             String shiftIdStr = request.getParameter("shiftId");
             String basicSalaryStr = request.getParameter("basicSalary");
             String hireDate = request.getParameter("hireDate");
+            String employmentStatus = request.getParameter("employmentStatus");
+            
+            // Only default employmentStatus if genuinely absent
+            if (employmentStatus == null || employmentStatus.trim().isEmpty()) {
+                employmentStatus = "ACTIVE";
+            }
             
             Employee employee = new Employee();
             employee.setFirstName(firstName);
@@ -216,6 +204,7 @@ public class EmployeeServlet extends HttpServlet {
             employee.setPhone(phone);
             employee.setDesignation(designation);
             employee.setDepartment(department);
+            employee.setEmploymentStatus(employmentStatus);
             
             if (shiftIdStr != null && !shiftIdStr.isEmpty()) {
                 employee.setShiftId(Integer.parseInt(shiftIdStr));
@@ -239,19 +228,17 @@ public class EmployeeServlet extends HttpServlet {
                 message = success ? "Employee updated successfully" : "Failed to update employee";
             }
             
-            if (success) {
-                request.setAttribute("success", message);
-            } else {
-                request.setAttribute("error", message);
-            }
-            
-            response.sendRedirect(request.getContextPath() + "/employee?action=list");
+            // Redirect with flash message
+            String redirectParam = success ? "success" : "error";
+            response.sendRedirect(request.getContextPath() + "/employee?action=list&" + redirectParam + "=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
             
         } catch (Exception e) {
             System.err.println("Error saving employee: " + e.getMessage());
             e.printStackTrace();
-            request.setAttribute("error", "Error saving employee");
-            listEmployees(request, response);
+            String message = "Error saving employee";
+            response.sendRedirect(request.getContextPath() + "/employee?action=list&error=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
         }
     }
     
@@ -266,13 +253,10 @@ public class EmployeeServlet extends HttpServlet {
             
             boolean success = employeeService.deleteEmployee(employeeId);
             
-            if (success) {
-                request.setAttribute("success", "Employee deleted successfully");
-            } else {
-                request.setAttribute("error", "Failed to delete employee");
-            }
-            
-            response.sendRedirect(request.getContextPath() + "/employee?action=list");
+            String message = success ? "Employee deleted successfully" : "Failed to delete employee";
+            String redirectParam = success ? "success" : "error";
+            response.sendRedirect(request.getContextPath() + "/employee?action=list&" + redirectParam + "=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
             
         } catch (Exception e) {
             System.err.println("Error deleting employee: " + e.getMessage());

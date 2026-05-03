@@ -133,6 +133,12 @@ public class PaymentServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
+            // Pick up flash messages from query parameters
+            String msg = request.getParameter("success");
+            if (msg != null) request.setAttribute("success", msg);
+            msg = request.getParameter("error");
+            if (msg != null) request.setAttribute("error", msg);
+            
             // Get all payments
             List<Payment> payments = paymentService.getAllPayments();
             request.setAttribute("payments", payments);
@@ -148,12 +154,6 @@ public class PaymentServlet extends HttpServlet {
             request.setAttribute("totalAmount", totalAmount);
             request.setAttribute("todayAmount", todayAmount);
 
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-
             // Forward to payment list page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/list.jsp");
             dispatcher.forward(request, response);
@@ -161,12 +161,6 @@ public class PaymentServlet extends HttpServlet {
         } catch (Exception e) {
             System.err.println("Error listing payments: " + e.getMessage());
             request.setAttribute("error", Constants.ERROR_DATABASE);
-            
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
             
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/list.jsp");
             dispatcher.forward(request, response);
@@ -177,12 +171,6 @@ public class PaymentServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-            
             // Forward to payment form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/form.jsp");
             dispatcher.forward(request, response);
@@ -210,12 +198,6 @@ public class PaymentServlet extends HttpServlet {
             request.setAttribute("payment", payment);
             request.setAttribute("isEdit", true);
 
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-
             // Forward to payment form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/form.jsp");
             dispatcher.forward(request, response);
@@ -242,12 +224,6 @@ public class PaymentServlet extends HttpServlet {
 
             request.setAttribute("payment", payment);
             request.setAttribute("isView", true);
-
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
 
             // Forward to payment form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/form.jsp");
@@ -307,20 +283,17 @@ public class PaymentServlet extends HttpServlet {
                 message = success ? "Payment updated successfully" : "Failed to update payment";
             }
 
-            if (success) {
-                request.setAttribute("success", message);
-            } else {
-                request.setAttribute("error", message);
-            }
-
-            // Redirect to payment list
-            response.sendRedirect(request.getContextPath() + "/payment?action=list");
+            // Redirect with flash message
+            String redirectParam = success ? "success" : "error";
+            response.sendRedirect(request.getContextPath() + "/payment?action=list&" + redirectParam + "=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
 
         } catch (Exception e) {
             System.err.println("Error saving payment: " + e.getMessage());
             e.printStackTrace();
-            request.setAttribute("error", "Error saving payment");
-            listPayments(request, response);
+            String message = "Error saving payment";
+            response.sendRedirect(request.getContextPath() + "/payment?action=list&error=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
         }
     }
 
@@ -332,14 +305,10 @@ public class PaymentServlet extends HttpServlet {
 
             boolean success = paymentService.deletePayment(paymentId);
 
-            if (success) {
-                request.setAttribute("success", "Payment deleted successfully");
-            } else {
-                request.setAttribute("error", "Failed to delete payment");
-            }
-
-            // Redirect to payment list
-            response.sendRedirect(request.getContextPath() + "/payment?action=list");
+            String message = success ? "Payment deleted successfully" : "Failed to delete payment";
+            String redirectParam = success ? "success" : "error";
+            response.sendRedirect(request.getContextPath() + "/payment?action=list&" + redirectParam + "=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
 
         } catch (Exception e) {
             System.err.println("Error deleting payment: " + e.getMessage());
@@ -350,11 +319,6 @@ public class PaymentServlet extends HttpServlet {
     private void showBulkSalaryForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, java.io.IOException {
         try {
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-            
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/bulk_salary.jsp");
             dispatcher.forward(request, response);
         } catch (Exception e) {
@@ -366,11 +330,6 @@ public class PaymentServlet extends HttpServlet {
     private void showBulkOvertimeForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, java.io.IOException {
         try {
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-            
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/bulk_overtime.jsp");
             dispatcher.forward(request, response);
         } catch (Exception e) {
@@ -385,11 +344,6 @@ public class PaymentServlet extends HttpServlet {
             EmployeeService employeeService = new EmployeeService();
             List<Employee> employees = employeeService.getAllEmployees();
             request.setAttribute("employees", employees);
-            
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
             
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/payment/employee_payment.jsp");
             dispatcher.forward(request, response);

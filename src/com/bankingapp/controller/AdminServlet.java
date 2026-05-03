@@ -113,15 +113,15 @@ public class AdminServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
         
         try {
+            // Pick up flash messages from query parameters
+            String msg = request.getParameter("success");
+            if (msg != null) request.setAttribute("success", msg);
+            msg = request.getParameter("error");
+            if (msg != null) request.setAttribute("error", msg);
+            
             // Get all admins
             List<Admin> admins = adminService.getAllAdmins();
             request.setAttribute("admins", admins);
-            
-            // Set admin in request for the included header
-            Admin currentAdmin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (currentAdmin != null) {
-                request.setAttribute("admin", currentAdmin);
-            }
             
             // Forward to admin list page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/admin/list.jsp");
@@ -130,12 +130,6 @@ public class AdminServlet extends HttpServlet {
         } catch (Exception e) {
             System.err.println("Error listing admins: " + e.getMessage());
             request.setAttribute("error", "Failed to retrieve admin list");
-            
-            // Set admin in request for the included header
-            Admin currentAdmin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (currentAdmin != null) {
-                request.setAttribute("admin", currentAdmin);
-            }
             
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/admin/list.jsp");
             dispatcher.forward(request, response);
@@ -149,12 +143,6 @@ public class AdminServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
         
         try {
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-            
             // Forward to admin form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/admin/form.jsp");
             dispatcher.forward(request, response);
@@ -182,11 +170,8 @@ public class AdminServlet extends HttpServlet {
                 return;
             }
             
-            request.setAttribute("admin", admin);
+            request.setAttribute("editAdmin", admin);
             request.setAttribute("isEdit", true);
-            
-            // Note: admin is already being used for the current session admin, so this attribute
-            // will be the admin being edited and will be available in the JSP
             
             // Forward to admin form page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/admin/form.jsp");
@@ -222,8 +207,9 @@ public class AdminServlet extends HttpServlet {
                 if (username == null || username.trim().isEmpty() ||
                     password == null || password.trim().isEmpty() ||
                     fullName == null || fullName.trim().isEmpty()) {
-                    request.setAttribute("error", "Username, password, and full name are required");
-                    showAddForm(request, response);
+                    String message = "Username, password, and full name are required";
+                    response.sendRedirect(request.getContextPath() + "/admin?action=add&error=" + 
+                        java.net.URLEncoder.encode(message, "UTF-8"));
                     return;
                 }
             }
@@ -235,7 +221,11 @@ public class AdminServlet extends HttpServlet {
             admin.setFullName(fullName);
             admin.setEmail(email);
             admin.setPhone(phone);
-            admin.setActive(isActiveStr != null && isActiveStr.equals("on"));
+            // Consistent isActive parsing
+            boolean isActive = "true".equalsIgnoreCase(isActiveStr)
+                    || "on".equalsIgnoreCase(isActiveStr)
+                    || "yes".equalsIgnoreCase(isActiveStr);
+            admin.setActive(isActive);
             
             boolean success = false;
             String message = "";
@@ -259,20 +249,17 @@ public class AdminServlet extends HttpServlet {
                 message = success ? "Admin updated successfully" : "Failed to update admin";
             }
             
-            if (success) {
-                request.setAttribute("success", message);
-            } else {
-                request.setAttribute("error", message);
-            }
-            
-            // Redirect to admin list
-            response.sendRedirect(request.getContextPath() + "/admin?action=list");
+            // Redirect with flash message
+            String redirectParam = success ? "success" : "error";
+            response.sendRedirect(request.getContextPath() + "/admin?action=list&" + redirectParam + "=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
             
         } catch (Exception e) {
             System.err.println("Error saving admin: " + e.getMessage());
             e.printStackTrace();
-            request.setAttribute("error", "Error saving admin");
-            showAddForm(request, response);
+            String message = "Error saving admin";
+            response.sendRedirect(request.getContextPath() + "/admin?action=list&error=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
         }
     }
     
@@ -289,21 +276,18 @@ public class AdminServlet extends HttpServlet {
             HttpSession session = request.getSession(false);
             Admin currentAdmin = (Admin) session.getAttribute(Constants.ADMIN_SESSION);
             if (currentAdmin != null && currentAdmin.getAdminId() == adminId) {
-                request.setAttribute("error", "Cannot delete the currently logged-in admin");
-                listAdmins(request, response);
+                String message = "Cannot delete the currently logged-in admin";
+                response.sendRedirect(request.getContextPath() + "/admin?action=list&error=" + 
+                    java.net.URLEncoder.encode(message, "UTF-8"));
                 return;
             }
             
             boolean success = adminService.deleteAdmin(adminId);
             
-            if (success) {
-                request.setAttribute("success", "Admin deactivated successfully");
-            } else {
-                request.setAttribute("error", "Failed to delete admin");
-            }
-            
-            // Redirect to admin list
-            response.sendRedirect(request.getContextPath() + "/admin?action=list");
+            String message = success ? "Admin deactivated successfully" : "Failed to delete admin";
+            String redirectParam = success ? "success" : "error";
+            response.sendRedirect(request.getContextPath() + "/admin?action=list&" + redirectParam + "=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
             
         } catch (NumberFormatException e) {
             System.err.println("Invalid admin ID: " + e.getMessage());

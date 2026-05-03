@@ -119,15 +119,15 @@ public class CustomerServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
         
         try {
+            // Pick up flash messages from query parameters
+            String msg = request.getParameter("success");
+            if (msg != null) request.setAttribute("success", msg);
+            msg = request.getParameter("error");
+            if (msg != null) request.setAttribute("error", msg);
+            
             // Get all customers
             List<Customer> customers = customerService.getAllCustomers();
             request.setAttribute("customers", customers);
-            
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
             
             // Forward to customer list page
             RequestDispatcher dispatcher = request.getRequestDispatcher(Constants.PAGE_CUSTOMER_LIST);
@@ -136,12 +136,6 @@ public class CustomerServlet extends HttpServlet {
         } catch (Exception e) {
             System.err.println("Error listing customers: " + e.getMessage());
             request.setAttribute("error", Constants.ERROR_DATABASE);
-            
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
             
             RequestDispatcher dispatcher = request.getRequestDispatcher(Constants.PAGE_CUSTOMER_LIST);
             dispatcher.forward(request, response);
@@ -158,12 +152,6 @@ public class CustomerServlet extends HttpServlet {
             // Get all packages for dropdown
             List<Package> packages = packageService.getAllPackages();
             request.setAttribute("packages", packages);
-            
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
             
             // Forward to customer form page
             RequestDispatcher dispatcher = request.getRequestDispatcher(Constants.PAGE_CUSTOMER_FORM);
@@ -199,16 +187,6 @@ public class CustomerServlet extends HttpServlet {
             request.setAttribute("packages", packages);
             request.setAttribute("isEdit", true);
             
-            // Set admin in request for the included header
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-            
-            // Forward to customer form page
-            RequestDispatcher dispatcher = request.getRequestDispatcher(Constants.PAGE_CUSTOMER_FORM);
-            dispatcher.forward(request, response);
-            
         } catch (Exception e) {
             System.err.println("Error showing edit form: " + e.getMessage());
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -237,6 +215,11 @@ public class CustomerServlet extends HttpServlet {
             String country = request.getParameter("country");
             String packageIdStr = request.getParameter("packageId");
             String accountStatus = request.getParameter("accountStatus");
+            
+            // Only default accountStatus if genuinely absent
+            if (accountStatus == null || accountStatus.trim().isEmpty()) {
+                accountStatus = "ACTIVE";
+            }
             
             // Create customer object
             Customer customer = new Customer();
@@ -272,20 +255,17 @@ public class CustomerServlet extends HttpServlet {
                 message = success ? Constants.SUCCESS_CUSTOMER_UPDATED : "Failed to update customer";
             }
             
-            if (success) {
-                request.setAttribute("success", message);
-            } else {
-                request.setAttribute("error", message);
-            }
-            
-            // Redirect to customer list
-            response.sendRedirect(request.getContextPath() + "/customer?action=list");
+            // Redirect with flash message
+            String redirectParam = success ? "success" : "error";
+            response.sendRedirect(request.getContextPath() + "/customer?action=list&" + redirectParam + "=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
             
         } catch (Exception e) {
             System.err.println("Error saving customer: " + e.getMessage());
             e.printStackTrace();
-            request.setAttribute("error", "Error saving customer");
-            listCustomers(request, response);
+            String message = "Error saving customer";
+            response.sendRedirect(request.getContextPath() + "/customer?action=list&error=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
         }
     }
     
@@ -300,14 +280,10 @@ public class CustomerServlet extends HttpServlet {
             
             boolean success = customerService.deleteCustomer(customerId);
             
-            if (success) {
-                request.setAttribute("success", Constants.SUCCESS_CUSTOMER_DELETED);
-            } else {
-                request.setAttribute("error", "Failed to delete customer");
-            }
-            
-            // Redirect to customer list
-            response.sendRedirect(request.getContextPath() + "/customer?action=list");
+            String message = success ? Constants.SUCCESS_CUSTOMER_DELETED : "Failed to delete customer";
+            String redirectParam = success ? "success" : "error";
+            response.sendRedirect(request.getContextPath() + "/customer?action=list&" + redirectParam + "=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
             
         } catch (Exception e) {
             System.err.println("Error deleting customer: " + e.getMessage());

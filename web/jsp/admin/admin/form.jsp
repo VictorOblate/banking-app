@@ -74,14 +74,14 @@
                 </div>
 
                 <%
-                    Admin admin = (Admin) request.getAttribute("admin");
+                    Admin editAdmin = (Admin) request.getAttribute("editAdmin");
                     Boolean isEditMode2 = (Boolean) request.getAttribute("isEdit");
                     isEditMode2 = isEditMode2 != null ? isEditMode2 : false;
                 %>
 
                 <form method="POST" action="${pageContext.request.contextPath}/admin?action=save">
                     <% if (isEditMode2) { %>
-                    <input type="hidden" name="adminId" value="<%= admin.getAdminId() %>">
+                    <input type="hidden" name="adminId" value="<%= editAdmin.getAdminId() %>">
                     <% } %>
 
                     <!-- Login Credentials -->
@@ -90,8 +90,8 @@
                             <label for="username">Username <span style="color: var(--error-red);">*</span></label>
                             <% if (isEditMode2) { %>
                             <input type="text" id="username" name="username" required disabled
-                                   value="<%= admin.getUsername() %>">
-                            <input type="hidden" name="username" value="<%= admin.getUsername() %>">
+                                   value="<%= editAdmin.getUsername() %>">
+                            <input type="hidden" name="username" value="<%= editAdmin.getUsername() %>">
                             <% } else { %>
                             <input type="text" id="username" name="username" required
                                    placeholder="Enter unique username" value="">
@@ -111,12 +111,12 @@
                         <div class="form-group">
                             <label for="fullName">Full Name <span style="color: var(--error-red);">*</span></label>
                             <input type="text" id="fullName" name="fullName" required
-                                   value="<%= isEditMode2 && admin != null ? admin.getFullName() : "" %>">
+                                   value="<%= isEditMode2 && editAdmin != null ? editAdmin.getFullName() : "" %>">
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
                             <input type="email" id="email" name="email"
-                                   value="<%= isEditMode2 && admin != null && admin.getEmail() != null ? admin.getEmail() : "" %>">
+                                   value="<%= isEditMode2 && editAdmin != null && editAdmin.getEmail() != null ? editAdmin.getEmail() : "" %>">
                         </div>
                     </div>
 
@@ -125,15 +125,14 @@
                         <div class="form-group">
                             <label for="phone">Phone Number</label>
                             <input type="tel" id="phone" name="phone"
-                                   value="<%= isEditMode2 && admin != null && admin.getPhone() != null ? admin.getPhone() : "" %>">
+                                   value="<%= isEditMode2 && editAdmin != null && editAdmin.getPhone() != null ? editAdmin.getPhone() : "" %>">
                         </div>
                         <div class="form-group">
-                            <label for="isActive">
-                                <input type="checkbox" id="isActive" name="isActive"
-                                    <% if (!isEditMode2 || (admin != null && admin.isActive())) { %>checked<% } %>>
-                                <span>Active Status</span>
-                            </label>
-                            <small>Uncheck to deactivate this admin account</small>
+                            <label for="isActive">Status</label>
+                            <select id="isActive" name="isActive">
+                                <option value="true"  <%= (isEditMode2 && editAdmin != null && editAdmin.isActive())  ? "selected" : (!isEditMode2 ? "selected" : "") %>>Active</option>
+                                <option value="false" <%= (isEditMode2 && editAdmin != null && !editAdmin.isActive()) ? "selected" : "" %>>Inactive</option>
+                            </select>
                         </div>
                     </div>
 

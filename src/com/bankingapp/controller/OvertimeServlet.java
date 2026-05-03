@@ -102,6 +102,12 @@ public class OvertimeServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
+            // Pick up flash messages from query parameters
+            String msg = request.getParameter("success");
+            if (msg != null) request.setAttribute("success", msg);
+            msg = request.getParameter("error");
+            if (msg != null) request.setAttribute("error", msg);
+            
             String status = request.getParameter("status");
             List<Overtime> overtimes;
 
@@ -119,12 +125,6 @@ public class OvertimeServlet extends HttpServlet {
 
             request.setAttribute("overtimes", overtimes);
 
-            // Set admin in request
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-
             // Forward to overtime list page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/overtime/list.jsp");
             dispatcher.forward(request, response);
@@ -139,11 +139,6 @@ public class OvertimeServlet extends HttpServlet {
             throws ServletException, java.io.IOException {
 
         try {
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/overtime/form.jsp");
             dispatcher.forward(request, response);
 
@@ -169,11 +164,6 @@ public class OvertimeServlet extends HttpServlet {
             request.setAttribute("overtime", overtime);
             request.setAttribute("isView", true);
 
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
-
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/overtime/form.jsp");
             dispatcher.forward(request, response);
 
@@ -189,11 +179,6 @@ public class OvertimeServlet extends HttpServlet {
         try {
             List<Overtime> overtimes = overtimeService.getPendingOvertimeRecords();
             request.setAttribute("overtimes", overtimes);
-
-            Admin admin = (Admin) request.getSession().getAttribute(Constants.ADMIN_SESSION);
-            if (admin != null) {
-                request.setAttribute("admin", admin);
-            }
 
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/admin/overtime/list.jsp");
             dispatcher.forward(request, response);
@@ -225,19 +210,17 @@ public class OvertimeServlet extends HttpServlet {
 
             boolean success = overtimeService.addOvertimeRecord(overtime);
 
-            if (success) {
-                request.setAttribute("success", "Overtime record saved successfully");
-            } else {
-                request.setAttribute("error", "Failed to save overtime record");
-            }
-
-            response.sendRedirect(request.getContextPath() + "/overtime?action=list");
+            String message = success ? "Overtime record saved successfully" : "Failed to save overtime record";
+            String redirectParam = success ? "success" : "error";
+            response.sendRedirect(request.getContextPath() + "/overtime?action=list&" + redirectParam + "=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
 
         } catch (Exception e) {
             System.err.println("Error saving overtime: " + e.getMessage());
             e.printStackTrace();
-            request.setAttribute("error", "Error saving overtime record");
-            listOvertimes(request, response);
+            String message = "Error saving overtime record";
+            response.sendRedirect(request.getContextPath() + "/overtime?action=list&error=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
         }
     }
 
@@ -249,13 +232,10 @@ public class OvertimeServlet extends HttpServlet {
 
             boolean success = overtimeService.approveOvertime(overtimeId);
 
-            if (success) {
-                request.setAttribute("success", "Overtime approved successfully");
-            } else {
-                request.setAttribute("error", "Failed to approve overtime");
-            }
-
-            response.sendRedirect(request.getContextPath() + "/overtime?action=list");
+            String message = success ? "Overtime approved successfully" : "Failed to approve overtime";
+            String redirectParam = success ? "success" : "error";
+            response.sendRedirect(request.getContextPath() + "/overtime?action=list&" + redirectParam + "=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
 
         } catch (Exception e) {
             System.err.println("Error approving overtime: " + e.getMessage());
@@ -271,13 +251,10 @@ public class OvertimeServlet extends HttpServlet {
 
             boolean success = overtimeService.rejectOvertime(overtimeId);
 
-            if (success) {
-                request.setAttribute("success", "Overtime rejected successfully");
-            } else {
-                request.setAttribute("error", "Failed to reject overtime");
-            }
-
-            response.sendRedirect(request.getContextPath() + "/overtime?action=list");
+            String message = success ? "Overtime rejected successfully" : "Failed to reject overtime";
+            String redirectParam = success ? "success" : "error";
+            response.sendRedirect(request.getContextPath() + "/overtime?action=list&" + redirectParam + "=" + 
+                java.net.URLEncoder.encode(message, "UTF-8"));
 
         } catch (Exception e) {
             System.err.println("Error rejecting overtime: " + e.getMessage());

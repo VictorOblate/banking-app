@@ -134,8 +134,8 @@
                     <div class="form-group mb-4">
                         <label for="isActive">Status</label>
                         <select id="isActive" name="isActive" <%= isReadOnly ? "disabled" : "" %>>
-                            <option value="true" <%= isEditMode2 && shift != null && shift.isActive() ? "selected" : "" %>>Active</option>
-                            <option value="false" <%= isEditMode2 && shift != null && !shift.isActive() ? "selected" : "" %>>Inactive</option>
+                            <option value="true"  <%= (isEditMode2 && shift != null && shift.isActive())  ? "selected" : (!isEditMode2 ? "selected" : "") %>>Active</option>
+                            <option value="false" <%= (isEditMode2 && shift != null && !shift.isActive()) ? "selected" : "" %>>Inactive</option>
                         </select>
                     </div>
 
